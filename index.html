@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiệp Mời Tốt Nghiệp UEH - 26/09</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Be Vietnam Pro & Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ueh: {
+                            blue: '#003B71',
+                            gold: '#FFB800',
+                            light: '#E8F1F9',
+                            coral: '#FF6B6B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Be Vietnam Pro"', '"Nunito"', 'sans-serif'],
+                        heading: ['"Be Vietnam Pro"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Custom Cartoon Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+<body class="min-h-screen flex items-center justify-center p-0 sm:p-4 text-slate-800 bg-slate-950/90 sm:bg-slate-900/80 overflow-y-auto sm:overflow-hidden">
+
+    <!-- Container Mô Phỏng Màn Hình Điện Thoại 9:16 Tự Co Giãn Thông Minh -->
+    <div id="card-container" onclick="createTapParticle(event)" class="relative w-full sm:max-w-[415px] h-[100dvh] sm:h-[min(840px,94vh)] sm:rounded-[36px] shadow-2xl overflow-hidden flex flex-col justify-between select-none">
+        
+        <!-- ✨ SPARKLE PARTICLES LAYER -->
+        <div id="sparkle-layer" class="sparkle-layer"></div>
+
+        <!-- 🫧 BUBBLE LAYER -->
+        <div id="bubble-layer" class="absolute inset-0 pointer-events-none z-0 overflow-hidden"></div>
+        
+        <!-- FLOATING STICKERS BACKGROUND LAYER -->
+        <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-70">
+            <span class="floating-sticker absolute top-12 left-4 text-2xl">✨</span>
+            <span class="floating-sticker absolute top-24 right-5 text-2xl">🧋</span>
+            <span class="floating-sticker absolute top-1/3 left-2 text-3xl animate-twinkle">🎓</span>
+            <span class="floating-sticker absolute top-1/2 right-3 text-2xl">💖</span>
+            <span class="floating-sticker absolute bottom-36 left-4 text-2xl">🎉</span>
+            <span class="floating-sticker absolute bottom-20 right-6 text-2xl animate-twinkle">🌟</span>
+            <span class="floating-sticker absolute top-2/3 left-3 text-xl">🎀</span>
+            <span class="floating-sticker absolute bottom-1/4 right-2 text-2xl">💯</span>
+        </div>
+
+        <!-- ✏️ EDIT MODE INDICATOR -->
+        <div id="edit-mode-indicator" class="edit-mode-indicator hidden">
+            <span>✏️ CHẾ ĐỘ SỬA: KÉO THẢ TỰ DO MỌI KHUNG CHỮ & NHẤP ĐÚP ĐỂ ĐỔI CHỮ</span>
+        </div>
+
+        <!-- 🎵 NÚT BẬT/TẮT NHẠC NỀN (ĐĨA THAN QUAY NHẤP NHÁY ÂM THANH) -->
+        <button id="btn-music-toggle" type="button" onclick="toggleMusicPlayback(event)" class="music-disk-btn" title="Bật / Tắt nhạc nền">
+            <i id="music-btn-icon" data-lucide="music" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Thẻ âm thanh chạy ngầm (Hỗ trợ file nhac.mp3 cùng thư mục hoặc link online) -->
+        <audio id="bg-audio" loop preload="auto">
+            <source id="bg-audio-source" src="nhac.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- 🌈 Thanh ProgressBar RAINBOW phía trên (5 Slide) - Chạm 3 lần để mở khóa chế độ Chủ Tiệc -->
+        <div class="absolute top-3 left-0 right-0 z-40 px-4 flex gap-1.5" onclick="handleSecretAdminTap()" title="Chạm 3 lần để mở/tắt công cụ quản trị">
+            <div class="h-1.5 flex-1 bg-white/30 rounded-full overflow-hidden shadow-sm backdrop-blur-sm cursor-pointer" onclick="goToSlide(0)" title="Slide 1: Câu chuyện 4 năm">
+                <div id="bar-0" class="h-full progress-bar-fill transition-all duration-500 w-0"></div>
+            </div>
+            <div class="h-1.5 flex-1 bg-white/30 rounded-full overflow-hidden shadow-sm backdrop-blur-sm cursor-pointer" onclick="goToSlide(1)" title="Slide 2: Ảnh tốt nghiệp">
+                <div id="bar-1" class="h-full progress-bar-fill transition-all duration-500 w-0"></div>
+            </div>
+            <div class="h-1.5 flex-1 bg-white/30 rounded-full overflow-hidden shadow-sm backdrop-blur-sm cursor-pointer" onclick="goToSlide(2)" title="Slide 3: Thân mời VIP">
+                <div id="bar-2" class="h-full progress-bar-fill transition-all duration-500 w-0"></div>
+            </div>
+            <div class="h-1.5 flex-1 bg-white/30 rounded-full overflow-hidden shadow-sm backdrop-blur-sm cursor-pointer" onclick="goToSlide(3)" title="Slide 4: Thời gian & Địa điểm">
+                <div id="bar-3" class="h-full progress-bar-fill transition-all duration-500 w-0"></div>
+            </div>
+            <div class="h-1.5 flex-1 bg-white/30 rounded-full overflow-hidden shadow-sm backdrop-blur-sm cursor-pointer" onclick="goToSlide(4)" title="Slide 5: Lời nhắn & RSVP">
+                <div id="bar-4" class="h-full progress-bar-fill transition-all duration-500 w-0"></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 0: MỞ ĐẦU (CỐT TRUYỆN 4 NĂM ĐẠI HỌC & TỰ KÉO THẢ STICKER) -->
+        <div id="slide-0" class="slide-card absolute inset-0 p-3 pt-7 pb-16 flex flex-col justify-between items-center text-center opacity-100 z-30 transition-all overflow-y-auto no-scrollbar">
+            
+            <!-- HEADER CÂU CHUYỆN -->
+            <div id="box-s0-header" class="draggable-box relative w-full z-10 space-y-0.5">
+                <div class="inline-flex items-center gap-1 bg-rose-600 text-white font-black text-[9.5px] px-3 py-0.5 rounded-full shadow-md uppercase tracking-wider animate-breathe sticker-badge">
+                    <span class="editable-text" data-key="s0-badge">📖 HÀNH TRÌNH 4 NĂM ĐẠI HỌC</span>
+                </div>
+                <h2 class="font-black text-[21px] leading-tight tracking-tight neon-text editable-text" data-key="s0-title">
+                    TỪ "NÀNG THƠ" ĐẾN TÂN CỬ NHÂN XỊN! 🎓✨
+                </h2>
+            </div>
+
+            <!-- NỘI DUNG 4 NĂM ĐẠI HỌC: RẠP CHIẾU PHIM HOẠT HÌNH (CARTOON VIDEO THEATER) -->
+            <div class="w-full flex-1 flex flex-col justify-center gap-1.5 my-auto max-w-[365px] relative z-20">
+                
+                <!-- KHUNG CHÍNH CARTOON VIDEO THEATER -->
+                <div class="cartoon-video-theater p-2 flex flex-col gap-1.5 shadow-2xl relative">
+                    
+                    <!-- THANH 4 MỐC NĂM (CHAPTER SELECTOR TABS) -->
+                    <div class="grid grid-cols-4 gap-1 w-full z-10">
+                        <button id="chapter-tab-0" onclick="setYearScene(0, true)" class="chapter-tab active">
+                            <span class="block">🌸 Năm 1</span>
+                        </button>
+                        <button id="chapter-tab-1" onclick="setYearScene(1, true)" class="chapter-tab">
+                            <span class="block">📚 Năm 2</span>
+                        </button>
+                        <button id="chapter-tab-2" onclick="setYearScene(2, true)" class="chapter-tab">
+                            <span class="block">☕ Năm 3</span>
+                        </button>
+                        <button id="chapter-tab-3" onclick="setYearScene(3, true)" class="chapter-tab">
+                            <span class="block">🎓 Năm 4</span>
+                        </button>
+                    </div>
+
+                    <!-- MÀN CHIẾU HOẠT HÌNH ĐIỆN ẢNH (CARTOON VIDEO SCREEN) -->
+                    <div id="video-screen-container" class="video-screen-container shadow-inner">
+                        
+                        <!-- CẢNH 1: NĂM 1 - NÀNG THƠ MƠ MỘNG THỦ KHOA -->
+                        <div id="scene-year-0" class="cartoon-scene active flex items-center justify-center overflow-hidden">
+                            <svg class="w-full h-full" viewBox="0 0 320 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="skyGrad1" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#bae6fd"/>
+                                        <stop offset="50%" stop-color="#fef08a" stop-opacity="0.7"/>
+                                        <stop offset="100%" stop-color="#fce7f3"/>
+                                    </linearGradient>
+                                    <linearGradient id="chibiHair1" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#451a03"/>
+                                        <stop offset="100%" stop-color="#290e03"/>
+                                    </linearGradient>
+                                    <linearGradient id="ribbonGrad1" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stop-color="#f43f5e"/>
+                                        <stop offset="100%" stop-color="#fb7185"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect width="320" height="230" fill="url(#skyGrad1)"/>
+                                
+                                <!-- Ánh hào quang mặt trời sáng ngời -->
+                                <g opacity="0.35" class="animate-pulse">
+                                    <polygon points="160,0 120,230 140,230" fill="#fde047"/>
+                                    <polygon points="160,0 180,230 200,230" fill="#fde047"/>
+                                    <polygon points="160,0 240,230 270,230" fill="#fde047"/>
+                                    <polygon points="160,0 50,230 80,230" fill="#fde047"/>
+                                </g>
+
+                                <!-- Cổng trường UEH danh giá -->
+                                <g opacity="0.85">
+                                    <rect x="35" y="58" width="250" height="14" rx="4" fill="#003B71" stroke="#FFB800" stroke-width="1.5"/>
+                                    <text x="160" y="69" font-size="7.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">ĐẠI HỌC KINH TẾ TP. HỒ CHÍ MINH (UEH)</text>
+                                    <rect x="50" y="72" width="16" height="110" fill="#003B71" rx="2"/>
+                                    <rect x="254" y="72" width="16" height="110" fill="#003B71" rx="2"/>
+                                    <path d="M120 72 L200 72 L190 92 L130 92 Z" fill="#FFB800" opacity="0.35"/>
+                                </g>
+
+                                <!-- Mây bồng bềnh -->
+                                <g class="animate-float" opacity="0.9">
+                                    <path d="M25 45 Q35 32 50 35 Q65 30 75 42 Q85 45 80 55 Q50 60 25 55 Z" fill="#FFFFFF"/>
+                                    <path d="M230 35 Q245 22 260 25 Q275 20 285 32 Q295 38 290 48 Q260 52 230 45 Z" fill="#FFFFFF"/>
+                                </g>
+
+                                <!-- Cánh hoa anh đào rơi phấp phới -->
+                                <g>
+                                    <ellipse cx="60" cy="20" rx="4" ry="7" fill="#f472b6" opacity="0.9" class="petal-1"/>
+                                    <ellipse cx="260" cy="15" rx="5" ry="8" fill="#fb7185" opacity="0.85" class="petal-2"/>
+                                    <ellipse cx="110" cy="30" rx="4" ry="6" fill="#f472b6" opacity="0.9" class="petal-3"/>
+                                    <ellipse cx="200" cy="10" rx="5" ry="7" fill="#fda4af" opacity="0.85" class="petal-4"/>
+                                </g>
+
+                                <!-- Sân cỏ xanh tươi -->
+                                <path d="M0 175 Q80 165 160 172 Q240 165 320 175 L320 230 L0 230 Z" fill="#4ade80"/>
+                                <path d="M0 190 Q80 182 160 188 Q240 180 320 190 L320 230 L0 230 Z" fill="#22c55e"/>
+
+                                <!-- Hoa dại nở trên cỏ -->
+                                <g>
+                                    <circle cx="40" cy="195" r="3" fill="#f43f5e"/><circle cx="40" cy="195" r="1.5" fill="#fef08a"/>
+                                    <circle cx="80" cy="202" r="3.5" fill="#ec4899"/><circle cx="80" cy="202" r="1.8" fill="#ffffff"/>
+                                    <circle cx="250" cy="196" r="3" fill="#3b82f6"/><circle cx="250" cy="196" r="1.5" fill="#fef08a"/>
+                                    <circle cx="285" cy="204" r="3.5" fill="#f43f5e"/><circle cx="285" cy="204" r="1.8" fill="#ffffff"/>
+                                </g>
+
+                                <!-- NHÂN VẬT NÀNG THƠ NĂM 1 NHÚN NHẢY VUI TƯƠI -->
+                                <g class="animate-character-hop">
+                                    <ellipse cx="160" cy="198" rx="28" ry="6" fill="#15803d" opacity="0.4"/>
+
+                                    <!-- Tóc xõa dài 2 bên -->
+                                    <path d="M136 115 C130 155 125 175 140 185 C148 185 152 170 150 145" fill="url(#chibiHair1)"/>
+                                    <path d="M184 115 C190 155 195 175 180 185 C172 185 168 170 170 145" fill="url(#chibiHair1)"/>
+
+                                    <!-- Đôi chân & Giày búp bê đỏ bóng -->
+                                    <line x1="152" y1="172" x2="150" y2="195" stroke="#ffe0bd" stroke-width="6" stroke-linecap="round"/>
+                                    <line x1="168" y1="172" x2="170" y2="195" stroke="#ffe0bd" stroke-width="6" stroke-linecap="round"/>
+                                    <line x1="150" y1="187" x2="150" y2="195" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+                                    <line x1="170" y1="187" x2="170" y2="195" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+                                    <ellipse cx="149" cy="196" rx="5" ry="3.2" fill="#e11d48"/>
+                                    <ellipse cx="171" cy="196" rx="5" ry="3.2" fill="#e11d48"/>
+
+                                    <!-- Váy xòe caro hồng xinh xắn -->
+                                    <path d="M142 145 L135 174 C150 178 170 178 185 174 L178 145 Z" fill="#f472b6" stroke="#db2777" stroke-width="1.2"/>
+                                    <path d="M140 162 Q160 166 180 162" stroke="#ffffff" stroke-width="1.2" fill="none"/>
+                                    <path d="M142 168 Q160 172 178 168" stroke="#ffffff" stroke-width="1.2" fill="none"/>
+
+                                    <!-- Áo sơ mi trắng cổ sen có nơ bướm -->
+                                    <path d="M144 125 L142 146 L178 146 L176 125 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+                                    <path d="M152 125 L160 134 L168 125 Z" fill="#fda4af"/>
+                                    <circle cx="160" cy="132" r="2.5" fill="#e11d48"/>
+
+                                    <!-- Tay trái ôm ly trà sữa trân châu tim -->
+                                    <g>
+                                        <path d="M142 130 Q130 140 132 152" stroke="#ffe0bd" stroke-width="5" stroke-linecap="round" fill="none"/>
+                                        <g transform="translate(124, 146)">
+                                            <path d="M0 4 L3 18 Q7 20 11 18 L14 4 Z" fill="#fde68a" stroke="#d97706" stroke-width="0.8"/>
+                                            <rect x="-1" y="2" width="16" height="3" rx="1.5" fill="#f43f5e"/>
+                                            <line x1="7" y1="2" x2="8" y2="-5" stroke="#ec4899" stroke-width="1.6" stroke-linecap="round"/>
+                                            <circle cx="4" cy="15" r="1.2" fill="#1e293b"/>
+                                            <circle cx="8" cy="16" r="1.2" fill="#1e293b"/>
+                                            <circle cx="10" cy="14" r="1.2" fill="#1e293b"/>
+                                        </g>
+                                    </g>
+
+                                    <!-- Tay phải giơ lên vẫy chào mừng (Animated) -->
+                                    <g class="animate-wave-hand" style="transform-origin: 176px 130px;">
+                                        <path d="M176 130 Q192 122 196 110" stroke="#ffe0bd" stroke-width="5" stroke-linecap="round" fill="none"/>
+                                        <circle cx="196" cy="108" r="4" fill="#ffe0bd"/>
+                                        <text x="198" y="105" font-size="8">✨</text>
+                                    </g>
+
+                                    <!-- Khuôn mặt Chibi tròn xinh -->
+                                    <circle cx="160" cy="106" r="22" fill="#ffe0bd" stroke="#fed7aa" stroke-width="1"/>
+
+                                    <!-- Tóc mái ngố búp bê & Hai nơ hồng -->
+                                    <path d="M138 104 C138 80 182 80 182 104 C175 98 168 100 160 97 C152 100 145 98 138 104 Z" fill="url(#chibiHair1)"/>
+                                    <g transform="translate(136, 92)">
+                                        <path d="M0 0 L-6 -4 L-6 4 Z" fill="url(#ribbonGrad1)"/>
+                                        <circle cx="0" cy="0" r="2" fill="#ffffff"/>
+                                    </g>
+                                    <g transform="translate(184, 92)">
+                                        <path d="M0 0 L6 -4 L6 4 Z" fill="url(#ribbonGrad1)"/>
+                                        <circle cx="0" cy="0" r="2" fill="#ffffff"/>
+                                    </g>
+
+                                    <!-- Đôi mắt to tròn long lanh ánh sao Anime -->
+                                    <g>
+                                        <ellipse cx="151" cy="107" rx="4.5" ry="5.5" fill="#1e293b"/>
+                                        <circle cx="152.5" cy="105" r="2" fill="#ffffff"/>
+                                        <circle cx="149.5" cy="109" r="1" fill="#ffffff"/>
+                                        <path d="M146 101 Q151 98 156 101" stroke="#451a03" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                                        
+                                        <!-- Mắt phải nháy mắt winking tinh nghịch -->
+                                        <path d="M164 107 Q169 102 174 107" stroke="#1e293b" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+                                        <path d="M164 101 Q169 98 174 101" stroke="#451a03" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                                    </g>
+
+                                    <!-- Hai má hồng phấn xinh xắn -->
+                                    <ellipse cx="145" cy="113" rx="4" ry="2.5" fill="#fb7185" opacity="0.75"/>
+                                    <ellipse cx="175" cy="113" rx="4" ry="2.5" fill="#fb7185" opacity="0.75"/>
+
+                                    <!-- Nụ cười tươi rạng rỡ -->
+                                    <path d="M157 114 Q160 120 163 114 Z" fill="#e11d48"/>
+                                </g>
+                            </svg>
+
+                            <!-- STICKER TRANG TRÍ HOẠT HÌNH CHO NĂM 1 -->
+                            <div id="sticker-y1-badge" class="draggable-sticker sticker-badge bg-gradient-to-r from-rose-500 to-pink-500 text-white font-black text-[9px] px-2.5 py-1 rounded-xl shadow-lg border-2 border-white" style="left: 10px; top: 10px;">
+                                🌸 NĂM 1: MƠ MỘNG
+                            </div>
+                            <div id="sticker-y1-speech" class="draggable-sticker comic-speech-bubble bg-white text-rose-600 font-black text-[9px] px-3 py-1 rounded-2xl shadow-xl border-2 border-rose-400" style="right: 10px; top: 10px;">
+                                HELLO UEH! ✨ Bằng Xuất Sắc!
+                            </div>
+                            <div id="sticker-y1-dream" class="draggable-sticker sticker-badge bg-amber-400 text-slate-950 font-black text-[8.5px] px-2 py-0.5 rounded-lg shadow-md border border-white" style="left: 10px; bottom: 10px;">
+                                🧋 Trà Sữa 100% Đường
+                            </div>
+                            <div id="sticker-y1-target" class="draggable-sticker sticker-badge bg-sky-500 text-white font-black text-[8.5px] px-2 py-0.5 rounded-lg shadow-md border border-white" style="right: 10px; bottom: 10px;">
+                                🎯 Thủ Khoa Thẳng Tiến
+                            </div>
+                        </div>
+
+                        <!-- CẢNH 2: NĂM 2 - BÃO DEADLINE & CLB CHẠY SHOW -->
+                        <div id="scene-year-1" class="cartoon-scene flex items-center justify-center overflow-hidden">
+                            <svg class="w-full h-full" viewBox="0 0 320 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="skyGrad2" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#fdba74"/>
+                                        <stop offset="50%" stop-color="#e2e8f0"/>
+                                        <stop offset="100%" stop-color="#93c5fd"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect width="320" height="230" fill="url(#skyGrad2)"/>
+
+                                <!-- Vệt gió lốc vần vũ ngang qua màn hình -->
+                                <g opacity="0.6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" fill="none">
+                                    <path d="M20 70 Q140 50 280 80 Q310 90 290 105 Q260 115 180 100"/>
+                                    <path d="M10 130 Q110 110 240 140 Q290 150 260 170"/>
+                                    <path d="M50 40 Q160 30 270 50"/>
+                                </g>
+
+                                <!-- Giấy kiểm tra, Slide A4 bay tứ tung -->
+                                <g>
+                                    <g transform="translate(45, 55) rotate(-22)" class="animate-float">
+                                        <rect width="24" height="32" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+                                        <line x1="4" y1="6" x2="20" y2="6" stroke="#94a3b8" stroke-width="1.2"/>
+                                        <line x1="4" y1="12" x2="16" y2="12" stroke="#94a3b8" stroke-width="1.2"/>
+                                        <line x1="4" y1="18" x2="18" y2="18" stroke="#ef4444" stroke-width="1.5"/>
+                                        <text x="12" y="27" font-size="6" font-weight="900" fill="#ef4444" text-anchor="middle">A+</text>
+                                    </g>
+                                    <g transform="translate(245, 60) rotate(28)" class="animate-float-reverse">
+                                        <rect width="26" height="34" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+                                        <line x1="4" y1="6" x2="22" y2="6" stroke="#0284c7" stroke-width="1.5"/>
+                                        <line x1="4" y1="12" x2="20" y2="12" stroke="#64748b" stroke-width="1.2"/>
+                                        <line x1="4" y1="18" x2="16" y2="18" stroke="#64748b" stroke-width="1.2"/>
+                                        <text x="13" y="28" font-size="5" font-weight="900" fill="#0284c7" text-anchor="middle">SLIDE.PPT</text>
+                                    </g>
+                                    <g transform="translate(80, 140) rotate(15)">
+                                        <rect width="20" height="26" rx="2" fill="#fef08a" stroke="#ca8a04" stroke-width="0.8"/>
+                                        <text x="10" y="16" font-size="5" font-weight="900" fill="#ca8a04" text-anchor="middle">QUIZ</text>
+                                    </g>
+                                </g>
+
+                                <!-- Sàn hành lang tốc độ cao -->
+                                <rect x="0" y="185" width="320" height="45" fill="#334155"/>
+                                <line x1="0" y1="190" x2="320" y2="190" stroke="#0284c7" stroke-width="2"/>
+                                <g stroke="#64748b" stroke-width="2" stroke-dasharray="16 12">
+                                    <line x1="0" y1="205" x2="320" y2="205"/>
+                                    <line x1="0" y1="218" x2="320" y2="218"/>
+                                </g>
+
+                                <!-- Khói chân chạy hoạt hình Tom & Jerry -->
+                                <g class="animate-pulse" opacity="0.8" transform="translate(90, 172)">
+                                    <circle cx="0" cy="0" r="10" fill="#ffffff"/>
+                                    <circle cx="-12" cy="4" r="7" fill="#ffffff"/>
+                                    <circle cx="-20" cy="8" r="5" fill="#ffffff"/>
+                                    <path d="M-10 10 L-30 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M-5 4 L-24 6" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                                </g>
+
+                                <!-- NHÂN VẬT NỮ SINH GUỒNG CHẠY HỐI HẢ -->
+                                <g transform="translate(130, 70)">
+                                    <!-- Đôi chân guồng xoay chạy vội (Animated) -->
+                                    <g class="animate-running-legs" transform="translate(15, 95)">
+                                        <ellipse cx="6" cy="18" rx="14" ry="7" stroke="#e11d48" stroke-width="4.5" fill="none" transform="rotate(-15)"/>
+                                        <ellipse cx="22" cy="16" rx="14" ry="7" stroke="#3b82f6" stroke-width="4.5" fill="none" transform="rotate(20)"/>
+                                        <circle cx="-4" cy="20" r="4" fill="#e11d48"/>
+                                        <circle cx="34" cy="14" r="4" fill="#3b82f6"/>
+                                    </g>
+
+                                    <!-- Thân nghiêng cắm đầu chạy -->
+                                    <g transform="rotate(16, 20, 70)">
+                                        <path d="M12 48 L8 76 C20 80 40 80 52 76 L48 48 Z" fill="#0284c7"/>
+                                        <path d="M14 26 L12 49 L48 49 L46 26 Z" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+                                        
+                                        <!-- Thẻ đeo ban tổ chức CLB -->
+                                        <g transform="translate(38, 38) rotate(35)">
+                                            <line x1="0" y1="0" x2="-8" y2="-12" stroke="#3b82f6" stroke-width="1.2"/>
+                                            <rect x="-2" y="0" width="14" height="18" rx="2" fill="#3b82f6" stroke="#ffffff" stroke-width="0.8"/>
+                                            <text x="5" y="11" font-size="4" font-weight="900" fill="#ffffff" text-anchor="middle">CLB</text>
+                                        </g>
+
+                                        <!-- Đầu & Tóc bay ngược -->
+                                        <path d="M5 14 C-10 10 -15 25 -12 40 C0 42 12 36 18 25" fill="#451a03"/>
+                                        <circle cx="28" cy="18" r="21" fill="#ffe0bd" stroke="#fed7aa" stroke-width="1"/>
+                                        <path d="M10 14 C15 -4 46 -4 48 14 C42 8 35 10 28 8 C20 10 14 8 10 14 Z" fill="#451a03"/>
+
+                                        <!-- Kính cận dày cộm & Mắt xoáy choáng váng -->
+                                        <g transform="translate(18, 12)">
+                                            <rect x="0" y="0" width="10" height="9" rx="2.5" fill="rgba(255,255,255,0.7)" stroke="#0f172a" stroke-width="1.6"/>
+                                            <rect x="13" y="0" width="10" height="9" rx="2.5" fill="rgba(255,255,255,0.7)" stroke="#0f172a" stroke-width="1.6"/>
+                                            <line x1="10" y1="4" x2="13" y2="4" stroke="#0f172a" stroke-width="1.6"/>
+                                            <path d="M4 4 Q5 2 6 4 Q6 6 4 6 Q2 5 3 3" stroke="#0284c7" stroke-width="1.2" fill="none"/>
+                                            <path d="M17 4 Q18 2 19 4 Q19 6 17 6 Q15 5 16 3" stroke="#0284c7" stroke-width="1.2" fill="none"/>
+                                        </g>
+
+                                        <ellipse cx="32" cy="28" rx="4.5" ry="3.5" fill="#dc2626"/>
+
+                                        <!-- Giọt mồ hôi văng tung tóe (Animated) -->
+                                        <g class="animate-sweat-pop">
+                                            <path d="M48 6 Q53 4 51 0 Q45 2 48 6 Z" fill="#38bdf8"/>
+                                            <circle cx="56" cy="-2" r="2.5" fill="#38bdf8"/>
+                                            <circle cx="62" cy="8" r="1.8" fill="#38bdf8"/>
+                                        </g>
+
+                                        <!-- HAI TAY ÔM CHỒNG SÁCH LẮC LƯ (Animated Wobble) -->
+                                        <g class="animate-wobble-books" transform="translate(38, 10)">
+                                            <path d="M-6 26 Q12 36 28 26" stroke="#ffe0bd" stroke-width="6" stroke-linecap="round" fill="none"/>
+                                            <g transform="translate(2, -8)">
+                                                <rect x="0" y="24" width="46" height="11" rx="2" fill="#ef4444" stroke="#991b1b" stroke-width="1"/>
+                                                <text x="23" y="32" font-size="5" font-weight="900" fill="#ffffff" text-anchor="middle">KINH TẾ VI MÔ</text>
+
+                                                <rect x="-4" y="13" width="48" height="11" rx="2" fill="#0284c7" stroke="#0369a1" stroke-width="1"/>
+                                                <text x="20" y="21" font-size="5" font-weight="900" fill="#ffffff" text-anchor="middle">THỐNG KÊ TOÁN</text>
+
+                                                <rect x="2" y="2" width="44" height="11" rx="2" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+                                                <text x="24" y="10" font-size="5" font-weight="900" fill="#ffffff" text-anchor="middle">MARKETING</text>
+
+                                                <rect x="-2" y="-9" width="46" height="11" rx="2" fill="#ec4899" stroke="#be185d" stroke-width="1"/>
+                                                <text x="21" y="-1" font-size="5" font-weight="900" fill="#ffffff" text-anchor="middle">KẾ HOẠCH CLB</text>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+
+                            </svg>
+
+                            <!-- STICKER TRANG TRÍ HOẠT HÌNH CHO NĂM 2 -->
+                            <div id="sticker-y2-badge" class="draggable-sticker sticker-badge bg-gradient-to-r from-sky-500 to-blue-600 text-white font-black text-[9px] px-2.5 py-1 rounded-xl shadow-lg border-2 border-white" style="left: 10px; top: 10px;">
+                                📚 NĂM 2: BÃO BÀI VỞ
+                            </div>
+                            <div id="sticker-y2-speech" class="draggable-sticker comic-speech-bubble bg-white text-rose-600 font-black text-[9px] px-3 py-1 rounded-2xl shadow-xl border-2 border-rose-500" style="right: 10px; top: 10px;">
+                                Á Á Á DEADLINE! 😱 Còn 5 phút!
+                            </div>
+                            <div id="sticker-y2-clb" class="draggable-sticker sticker-badge bg-amber-400 text-slate-900 font-black text-[8.5px] px-2 py-0.5 rounded-lg shadow-md border border-white" style="left: 10px; bottom: 10px;">
+                                ⚡ Chạy Show CLB
+                            </div>
+                            <div id="sticker-y2-quiz" class="draggable-sticker sticker-badge bg-rose-500 text-white font-black text-[8.5px] px-2 py-0.5 rounded-lg shadow-md border border-white" style="right: 10px; bottom: 10px;">
+                                📑 Bài Nhóm Gấp Rút
+                            </div>
+                        </div>
+
+                        <!-- CẢNH 3: NĂM 3 - ĐÊM TRẮNG CÀ PHÊ & ZOMBIE PHÒNG TRỌ -->
+                        <div id="scene-year-2" class="cartoon-scene flex items-center justify-center overflow-hidden">
+                            <svg class="w-full h-full" viewBox="0 0 320 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="nightGrad3" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#020617"/>
+                                        <stop offset="60%" stop-color="#0f172a"/>
+                                        <stop offset="100%" stop-color="#1e1b4b"/>
+                                    </linearGradient>
+                                    <radialGradient id="screenGlow3" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.6"/>
+                                        <stop offset="70%" stop-color="#0284c7" stop-opacity="0.2"/>
+                                        <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+                                    </radialGradient>
+                                </defs>
+                                <rect width="320" height="230" fill="url(#nightGrad3)"/>
+
+                                <!-- Cửa sổ trăng khuyết & sao đêm -->
+                                <g transform="translate(20, 25)">
+                                    <rect width="55" height="70" rx="3" fill="#030712" stroke="#334155" stroke-width="1.8"/>
+                                    <line x1="27" y1="0" x2="27" y2="70" stroke="#334155" stroke-width="1.5"/>
+                                    <line x1="0" y1="35" x2="55" y2="35" stroke="#334155" stroke-width="1.5"/>
+                                    <path d="M14 12 A8 8 0 0 0 22 24 A10 10 0 1 1 14 12 Z" fill="#facc15"/>
+                                    <circle cx="40" cy="18" r="1.5" fill="#ffffff" class="animate-twinkle"/>
+                                    <circle cx="34" cy="50" r="1.2" fill="#ffffff" class="animate-twinkle"/>
+                                    <circle cx="48" cy="42" r="1" fill="#ffffff"/>
+                                </g>
+
+                                <!-- Đồng hồ 03:15 SÁNG -->
+                                <g transform="translate(265, 30)">
+                                    <circle cx="20" cy="20" r="20" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+                                    <circle cx="20" cy="20" r="2" fill="#f59e0b"/>
+                                    <line x1="20" y1="20" x2="31" y2="20" stroke="#f43f5e" stroke-width="2" stroke-linecap="round"/>
+                                    <line x1="20" y1="20" x2="28" y2="28" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+                                    <text x="20" y="10" font-size="5" font-weight="900" fill="#94a3b8" text-anchor="middle">12</text>
+                                    <text x="32" y="22" font-size="5" font-weight="900" fill="#f59e0b" text-anchor="middle">3</text>
+                                    <text x="20" y="34" font-size="5" font-weight="900" fill="#94a3b8" text-anchor="middle">6</text>
+                                    <rect x="0" y="44" width="40" height="12" rx="3" fill="#7f1d1d" stroke="#ef4444" stroke-width="0.8"/>
+                                    <text x="20" y="53" font-size="6" font-weight="900" fill="#fef08a" text-anchor="middle" class="animate-pulse">03:15 AM</text>
+                                </g>
+
+                                <!-- Mặt bàn học tập -->
+                                <rect x="10" y="165" width="300" height="14" rx="3" fill="#451a03" stroke="#290e03" stroke-width="1.5"/>
+                                <rect x="25" y="179" width="270" height="51" fill="#1c1917"/>
+
+                                <!-- Lon bò húc ngổn ngang -->
+                                <g transform="translate(25, 132)">
+                                    <rect x="0" y="12" width="10" height="21" rx="2" fill="#0284c7" stroke="#0369a1" stroke-width="0.8"/>
+                                    <text x="5" y="24" font-size="4" font-weight="900" fill="#facc15" text-anchor="middle">BÒ</text>
+                                    <rect x="12" y="8" width="10" height="25" rx="2" fill="#d97706" stroke="#92400e" stroke-width="0.8"/>
+                                    <text x="17" y="22" font-size="4" font-weight="900" fill="#ffffff" text-anchor="middle">HÚC</text>
+                                    <rect x="24" y="14" width="11" height="19" rx="2" fill="#0284c7" stroke="#0369a1" stroke-width="0.8"/>
+                                    <rect x="8" y="27" width="22" height="7" rx="2" fill="#78350f" transform="rotate(-15)"/>
+                                </g>
+
+                                <!-- Ly cà phê khói bốc nghi ngút (Animated Steam) -->
+                                <g transform="translate(245, 126)">
+                                    <rect x="4" y="18" width="20" height="22" rx="3" fill="#3e1c07" stroke="#d97706" stroke-width="1.2"/>
+                                    <path d="M24 22 C30 22 30 32 24 32" stroke="#d97706" stroke-width="2" fill="none"/>
+                                    <text x="14" y="32" font-size="5" font-weight="900" fill="#facc15" text-anchor="middle">COFFEE</text>
+                                    <g class="animate-steam-smoke">
+                                        <path d="M10 14 Q16 6 12 0 Q18 -6 14 -14" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8"/>
+                                        <path d="M18 14 Q14 6 18 0 Q14 -6 18 -14" stroke="#e2e8f0" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.8"/>
+                                    </g>
+                                </g>
+
+                                <!-- Ánh sáng laptop le lói (Animated Screen Flicker) -->
+                                <ellipse cx="160" cy="140" rx="90" ry="45" fill="url(#screenGlow3)" class="animate-screen-flicker"/>
+
+                                <!-- NHÂN VẬT ZOMBIE TRÙM CHĂN GÕ PHÍM -->
+                                <g transform="translate(110, 62)">
+                                    <path d="M10 50 C-5 80 -10 108 5 110 L95 110 C110 108 105 80 90 50 Z" fill="#d97706" stroke="#92400e" stroke-width="2"/>
+                                    <path d="M5 80 Q50 90 95 80" stroke="#b45309" stroke-width="2" fill="none"/>
+
+                                    <!-- Tóc tai bù xù dựng đứng & Bút chì cài tóc -->
+                                    <path d="M15 42 C0 20 10 -4 48 -2 C80 -4 98 18 85 42" fill="#451a03"/>
+                                    <line x1="30" y1="2" x2="20" y2="-12" stroke="#451a03" stroke-width="3" stroke-linecap="round"/>
+                                    <line x1="50" y1="-2" x2="52" y2="-16" stroke="#451a03" stroke-width="3" stroke-linecap="round"/>
+                                    <line x1="70" y1="4" x2="82" y2="-8" stroke="#451a03" stroke-width="3" stroke-linecap="round"/>
+                                    <line x1="25" y1="12" x2="75" y2="4" stroke="#ef4444" stroke-width="3.5" stroke-linecap="round"/>
+
+                                    <circle cx="50" cy="40" r="23" fill="#ffe0bd" stroke="#cbd5e1" stroke-width="1"/>
+                                    <ellipse cx="50" cy="48" rx="16" ry="8" fill="#38bdf8" opacity="0.3" class="animate-screen-flicker"/>
+
+                                    <!-- Mắt thâm quầng giật giật (Animated Eye Twitch) -->
+                                    <g class="animate-eye-twitch">
+                                        <ellipse cx="40" cy="38" rx="8.5" ry="6.5" fill="#475569" opacity="0.75"/>
+                                        <circle cx="40" cy="38" r="5" fill="#ffffff"/>
+                                        <circle cx="40" cy="38" r="2.5" fill="#dc2626"/>
+                                        <line x1="33" y1="31" x2="47" y2="34" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+
+                                        <ellipse cx="60" cy="38" rx="8.5" ry="6.5" fill="#475569" opacity="0.75"/>
+                                        <circle cx="60" cy="38" r="5" fill="#ffffff"/>
+                                        <circle cx="60" cy="38" r="2.5" fill="#dc2626"/>
+                                        <line x1="67" y1="31" x2="53" y2="34" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+                                    </g>
+
+                                    <path d="M42 54 Q50 49 58 54" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+                                    <!-- Đôi tay gõ phím cộc cộc (Animated) -->
+                                    <g class="animate-typing-hands" transform="translate(24, 76)">
+                                        <ellipse cx="14" cy="18" rx="6" ry="4" fill="#ffe0bd"/>
+                                        <ellipse cx="38" cy="18" rx="6" ry="4" fill="#ffe0bd"/>
+                                        <line x1="12" y1="20" x2="14" y2="25" stroke="#ffe0bd" stroke-width="2" stroke-linecap="round"/>
+                                        <line x1="16" y1="20" x2="18" y2="25" stroke="#ffe0bd" stroke-width="2" stroke-linecap="round"/>
+                                        <line x1="36" y1="20" x2="34" y2="25" stroke="#ffe0bd" stroke-width="2" stroke-linecap="round"/>
+                                        <line x1="40" y1="20" x2="40" y2="25" stroke="#ffe0bd" stroke-width="2" stroke-linecap="round"/>
+                                    </g>
+                                </g>
+
+                                <!-- Laptop phát sáng gõ bài -->
+                                <g transform="translate(132, 138)">
+                                    <rect x="0" y="0" width="56" height="34" rx="2.5" fill="#0284c7" stroke="#0f172a" stroke-width="1.5"/>
+                                    <g opacity="0.85" class="animate-pulse">
+                                        <line x1="4" y1="6" x2="42" y2="6" stroke="#ffffff" stroke-width="1.8"/>
+                                        <line x1="4" y1="12" x2="50" y2="12" stroke="#fef08a" stroke-width="1.5"/>
+                                        <line x1="4" y1="18" x2="35" y2="18" stroke="#ffffff" stroke-width="1.5"/>
+                                        <line x1="4" y1="24" x2="48" y2="24" stroke="#38bdf8" stroke-width="1.5"/>
+                                    </g>
+                                    <path d="M-6 34 L62 34 L56 42 L0 42 Z" fill="#64748b" stroke="#334155" stroke-width="1.2"/>
+                                    <circle cx="28" cy="17" r="3.5" fill="#ffffff" opacity="0.4"/>
+                                </g>
+                            </svg>
+
+                            <!-- STICKER TRANG TRÍ HOẠT HÌNH CHO NĂM 3 -->
+                            <div id="sticker-y3-badge" class="draggable-sticker sticker-badge bg-gradient-to-r from-amber-700 to-yellow-800 text-yellow-200 font-black text-[9px] px-2.5 py-1 rounded-xl shadow-lg border border-amber-500" style="left: 10px; top: 10px;">
+                                ☕ NĂM 3: ZOMBIE ĐÊM
+                            </div>
+                            <div id="sticker-y3-speech" class="draggable-sticker comic-speech-bubble bg-slate-900 text-amber-300 font-black text-[9px] px-3 py-1 rounded-2xl shadow-xl border-2 border-amber-400" style="right: 10px; top: 10px;">
+                                CÒN THỞ LÀ CÒN GÕ! 💀 03:15 AM
+                            </div>
+                            <div id="sticker-y3-coffee" class="draggable-sticker sticker-badge bg-amber-500 text-slate-950 font-black text-[8.5px] px-2 py-0.5 rounded-lg shadow-md border border-white" style="left: 10px; bottom: 10px;">
+                                ☕ Cà Phê Cứu Rỗi
+                            </div>
+                            <div id="sticker-y3-redbull" class="draggable-sticker sticker-badge bg-blue-600 text-white font-black text-[8.5px] px-2 py-0.5 rounded-lg shadow-md border border-white" style="right: 10px; bottom: 10px;">
+                                🔋 Bò Húc Bất Tử
+                            </div>
+                        </div>
+
+                        <!-- CẢNH 4: NĂM 4 - BIẾN HÌNH SIÊU NHÂN (TỪ ĐAU KHỔ TÀN TẠ THÀNH SIÊU NHÂN CỬ NHÂN!) -->
+                        <div id="scene-year-3" class="cartoon-scene flex items-center justify-center overflow-hidden">
+                            
+                            <!-- GIAI ĐOẠN 1: ĐAU KHỔ, TÀN TẠ, KIỆT SỨC VÌ DEADLINE (ANIME DRAMA, KHÔNG CHIBI) -->
+                            <div id="y4-exhausted-state" class="absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-500 z-10">
+                                <svg class="w-full h-full" viewBox="0 0 320 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="stormExhausted" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#020617"/>
+                                            <stop offset="50%" stop-color="#1e1b4b"/>
+                                            <stop offset="100%" stop-color="#0f172a"/>
+                                        </linearGradient>
+                                        <linearGradient id="dramaHair" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#3b1d11"/>
+                                            <stop offset="100%" stop-color="#1c0b05"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <rect width="320" height="230" fill="url(#stormExhausted)"/>
+
+                                    <!-- Bầu trời sấm chớp cuồng nộ báo động -->
+                                    <g class="animate-float" opacity="0.95">
+                                        <path d="M20 30 Q60 15 100 25 Q140 10 180 25 Q220 15 260 28 Q300 20 310 45 Q260 55 180 50 Q100 55 20 45 Z" fill="#334155"/>
+                                        <polygon points="120,40 105,62 118,62 98,90 135,68 122,68" fill="#FACC15" stroke="#CA8A04" stroke-width="1.2" class="animate-lightning-flash"/>
+                                        <polygon points="230,35 220,52 230,52 215,75 242,56 232,56" fill="#FACC15" stroke="#CA8A04" stroke-width="1.2" class="animate-lightning-flash"/>
+                                        <line x1="50" y1="45" x2="35" y2="75" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+                                        <line x1="160" y1="40" x2="145" y2="70" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+                                        <line x1="280" y1="45" x2="265" y2="75" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+                                    </g>
+
+                                    <!-- Mặt bàn học gãy gục và deadline vây quanh -->
+                                    <rect x="10" y="165" width="300" height="14" rx="3" fill="#451a03" stroke="#290e03" stroke-width="1.5"/>
+                                    <rect x="20" y="179" width="280" height="45" fill="#1c1917"/>
+
+                                    <!-- Chồng khóa luận 200 trang đè nặng -->
+                                    <g transform="translate(15, 125)">
+                                        <rect x="0" y="10" width="85" height="13" rx="2" fill="#dc2626" stroke="#991b1b" stroke-width="1"/>
+                                        <text x="42" y="19" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">KHOÁ LUẬN 200 TRANG</text>
+                                        <rect x="5" y="23" width="80" height="13" rx="2" fill="#d97706" stroke="#92400e" stroke-width="1"/>
+                                        <text x="45" y="32" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">TIỂU LUẬN RE-SUBMIT</text>
+                                    </g>
+
+                                    <!-- Laptop bị sập nguồn / màn hình xanh BSOD -->
+                                    <g transform="translate(85, 128)">
+                                        <rect x="0" y="0" width="48" height="30" rx="2.5" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5"/>
+                                        <text x="24" y="13" font-size="9" font-weight="900" fill="#ffffff" text-anchor="middle">:(</text>
+                                        <text x="24" y="23" font-size="5.5" font-weight="bold" fill="#93c5fd" text-anchor="middle">ERROR 404</text>
+                                        <path d="M-4 30 L52 30 L48 37 L0 37 Z" fill="#64748b" stroke="#334155" stroke-width="1"/>
+                                    </g>
+
+                                    <!-- NHÂN VẬT ANIME DRAMA: TÀN TẠ, GỤC NGÃ ĐAU ĐỚN (KHÔNG PHẢI CHIBI) -->
+                                    <g transform="translate(145, 68)">
+                                        <path d="M-5 95 C-15 70 5 50 35 48 C65 50 85 70 75 95 Z" fill="#be185d" stroke="#831843" stroke-width="1.8"/>
+                                        <path d="M10 52 C25 48 45 48 60 52" stroke="#f472b6" stroke-width="1.5" fill="none"/>
+
+                                        <!-- Mái tóc dài xơ xác rũ rượi đổ tràn xuống mặt bàn -->
+                                        <path d="M5 45 C-15 30 -5 10 35 8 C75 10 85 30 65 45 C80 65 85 90 95 98 C80 98 75 80 65 65 C45 75 25 75 5 65 C-5 80 -10 98 -25 98 C-15 90 -10 65 5 45 Z" fill="url(#dramaHair)"/>
+
+                                        <!-- Đôi bàn tay ôm chặt đầu đau khổ bế tắc -->
+                                        <g>
+                                            <path d="M0 65 Q-15 50 -10 40 Q-5 35 10 45" stroke="#ffe0bd" stroke-width="5" stroke-linecap="round" fill="none"/>
+                                            <path d="M70 65 Q85 50 80 40 Q75 35 60 45" stroke="#ffe0bd" stroke-width="5" stroke-linecap="round" fill="none"/>
+                                        </g>
+
+                                        <!-- Vệt bóng tối bao trùm drama anime -->
+                                        <g stroke="#38bdf8" stroke-width="1.2" opacity="0.8">
+                                            <line x1="20" y1="18" x2="20" y2="35"/>
+                                            <line x1="26" y1="16" x2="26" y2="38"/>
+                                            <line x1="32" y1="18" x2="32" y2="34"/>
+                                            <line x1="38" y1="16" x2="38" y2="37"/>
+                                            <line x1="44" y1="18" x2="44" y2="35"/>
+                                        </g>
+
+                                        <!-- Hai dòng nước mắt xối xả rơi xuống bàn (Animated) -->
+                                        <path d="M22 45 Q20 70 18 95" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="animate-tears-stream" fill="none"/>
+                                        <path d="M48 45 Q50 70 52 95" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="animate-tears-stream" fill="none"/>
+
+                                        <!-- Vũng nước mắt đọng trên bàn -->
+                                        <ellipse cx="35" cy="97" rx="35" ry="6" fill="#38bdf8" opacity="0.7"/>
+                                    </g>
+
+                                    <!-- Bong bóng thoại drama đau khổ -->
+                                    <g transform="translate(165, 18)" class="animate-bounce-subtle">
+                                        <polygon points="10,0 145,0 140,42 30,42 12,52 18,40 0,40" fill="#0f172a" stroke="#ef4444" stroke-width="1.8" filter="drop-shadow(0 2px 6px rgba(0,0,0,0.4))"/>
+                                        <text x="75" y="16" font-size="7.5" font-weight="900" fill="#ef4444" text-anchor="middle">KIỆT SỨC RỒI! 😭</text>
+                                        <text x="75" y="28" font-size="6" font-weight="800" fill="#facc15" text-anchor="middle">100 deadline đè bẹp dí...</text>
+                                        <text x="75" y="37" font-size="5" font-weight="900" fill="#38bdf8" text-anchor="middle">Ai cứu tôi với?!</text>
+                                    </g>
+
+                                    <!-- Huy hiệu cảnh báo đỏ -->
+                                    <g transform="translate(12, 12)">
+                                        <rect x="0" y="0" width="95" height="20" rx="6" fill="#dc2626" stroke="#fecaca" stroke-width="1.2"/>
+                                        <text x="47" y="13" font-size="7.5" font-weight="900" fill="#ffffff" text-anchor="middle">📉 NĂM 4: KIỆT SỨC 0%</text>
+                                    </g>
+                                </svg>
+
+                                <!-- Nút BẤM ĐỂ BIẾN HÌNH SIÊU NHÂN (Nổi bật trên cảnh đau khổ) -->
+                                <div class="absolute bottom-2 inset-x-3 z-30 flex items-center justify-center">
+                                    <button onclick="triggerSuperheroTransformation()" class="w-full py-1.5 px-3 bg-gradient-to-r from-amber-400 via-rose-500 to-yellow-400 hover:scale-105 active:scale-95 text-slate-950 font-black text-[10.5px] rounded-xl shadow-2xl border-2 border-white flex items-center justify-center gap-1.5 animate-pulse transition duration-300">
+                                        <span class="text-sm animate-bounce">⚡</span>
+                                        <span>BẤM ĐỂ BIẾN HÌNH SIÊU NHÂN! 🦸‍♀️💥</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- LỚP HIỆU ỨNG NỔ TIA CHỚP BIẾN HÌNH (BURST FLASH) -->
+                            <div id="y4-burst-layer" class="absolute inset-0 pointer-events-none hidden items-center justify-center z-40">
+                                <div class="w-full h-full bg-white/95 animate-superhero-burst flex items-center justify-center">
+                                    <div class="bg-gradient-to-r from-rose-500 via-pink-500 to-amber-400 text-white font-black text-base px-5 py-2.5 rounded-2xl shadow-2xl border-4 border-white transform rotate-[-2deg] animate-comic-pow flex items-center gap-2">
+                                        <span class="text-xl">⚡</span>
+                                        <span>HENSHIN! BIẾN HÌNH SIÊU NHÂN HỒNG!</span>
+                                        <span class="text-xl">💥</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GIAI ĐOẠN 2: VIDEO SIÊU NHÂN HỒNG CHIẾN BINH CỬ NHÂN (CHUẨN CINEMATIC VIDEO, KHÔNG ICON RÁC) -->
+                            <div id="y4-superhero-state" class="absolute inset-0 w-full h-full hidden flex flex-col items-center justify-center hero-sentai-bg relative overflow-hidden transition-all duration-500 z-20">
+                                
+                                <!-- Tia sáng bùng nổ Super Sentai quay tròn -->
+                                <div class="hero-sentai-rays"></div>
+
+                                <!-- Vòng năng lượng hoàng kim & hồng ngọc -->
+                                <div class="hero-energy-ring"></div>
+
+                                <!-- Khung kính ngắm Viewfinder video chuyên nghiệp -->
+                                <div class="video-viewfinder-corner video-viewfinder-tl"></div>
+                                <div class="video-viewfinder-corner video-viewfinder-tr"></div>
+                                <div class="video-viewfinder-corner video-viewfinder-bl"></div>
+                                <div class="video-viewfinder-corner video-viewfinder-br"></div>
+
+                                <!-- Thanh trạng thái Video REC & 4K (Chuẩn phong cách Video) -->
+                                <div class="absolute top-2 inset-x-3 z-30 flex items-center justify-between pointer-events-none">
+                                    <div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 backdrop-blur text-[9px] font-mono text-white font-bold tracking-wider border border-white/10">
+                                        <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                                        <span class="text-red-400">● REC</span>
+                                        <span class="text-amber-300">00:04</span>
+                                    </div>
+                                    <div class="px-2 py-0.5 rounded bg-black/60 backdrop-blur text-[9px] font-mono text-emerald-400 font-bold tracking-wider border border-white/10 flex items-center gap-1">
+                                        <span>4K</span>
+                                        <span class="text-slate-400">•</span>
+                                        <span>60FPS</span>
+                                    </div>
+                                </div>
+
+                                <!-- Nhân vật SIÊU NHÂN HỒNG đứng thế tung nắm đấm dũng mãnh (Hình ảnh người dùng yêu cầu) -->
+                                <div class="relative z-20 flex items-center justify-center w-full h-[175px] pt-4 superhero-enter">
+                                    <img src="sieunhan_pink_clean.png" alt="Siêu Nhân Hồng Tân Cử Nhân" class="h-full object-contain hero-pink-ranger-img drop-shadow-2xl">
+                                </div>
+
+                                <!-- Băng thông tin Video điện ảnh Lower-Third (Sạch sẽ, chuẩn video, không icon rác) -->
+                                <div class="absolute bottom-2 inset-x-3 z-30 flex items-center justify-between gap-2 px-2.5 py-1 rounded-xl bg-slate-950/85 backdrop-blur-md border border-pink-500/50 shadow-2xl">
+                                    <div class="flex items-center gap-1.5 text-[9.5px] font-black text-white">
+                                        <span class="text-pink-400 text-xs animate-pulse">⚡</span>
+                                        <span class="tracking-wide">SIÊU NHÂN HỒNG TÂN CỬ NHÂN</span>
+                                    </div>
+                                    <button onclick="replaySuperheroTransformation()" class="px-2 py-0.5 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-400 hover:to-rose-500 active:scale-95 text-white font-black text-[8.5px] rounded-lg shadow border border-pink-300/40 flex items-center gap-1 transition">
+                                        <span>🔄 Xem lại</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- THANH TIẾN TRÌNH VIDEO TIMELINE & THỜI GIAN -->
+                    <div class="flex items-center gap-2 px-1">
+                        <div class="video-timeline-track flex-1">
+                            <div id="video-timeline-fill" class="video-timeline-fill"></div>
+                        </div>
+                        <span id="video-time-display" class="text-[9px] font-black text-amber-300 font-mono tracking-wider">00:01 / 00:04</span>
+                    </div>
+
+                    <!-- KHUNG ĐIỀU KHIỂN CHUYỂN NĂM (NĂM TRƯỚC / NĂM SAU / XEM LẠI) -->
+                    <div class="flex items-center justify-between px-1">
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="prevYearScene()" class="video-ctrl-btn bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-[9.5px] px-2.5 py-1 rounded-lg border border-slate-600 flex items-center gap-1 shadow-sm transition active:scale-95 cursor-pointer" title="Năm trước">
+                                <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                                <span>Năm trước</span>
+                            </button>
+                            <button onclick="nextYearScene()" class="video-ctrl-btn bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-black text-[9.5px] px-3 py-1 rounded-lg border border-pink-300 flex items-center gap-1 shadow-md transition active:scale-95 cursor-pointer" title="Năm sau">
+                                <span>Năm sau</span>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button onclick="replayVideo()" class="video-ctrl-btn bg-slate-800 hover:bg-slate-700 text-slate-300 p-1 rounded-lg border border-slate-600 transition active:scale-95 cursor-pointer" title="Xem lại từ Năm 1">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                        <div class="text-right">
+                            <span id="video-stat-life" class="inline-block bg-emerald-950/80 border border-emerald-400 text-emerald-300 font-black text-[8px] px-2 py-0.5 rounded-full shadow-sm editable-text" data-key="s0-life-gauge">❤️ SINH LỰC: 100%</span>
+                        </div>
+                    </div>
+
+                    <!-- PHỤ ĐỀ ĐIỆN ẢNH (CINEMA SUBTITLE BOX) -->
+                    <div id="box-s0-subtitle" class="draggable-box cinema-subtitle-box p-1.5 text-center flex flex-col gap-0.5">
+                        <p id="cinema-subtitle-text" class="text-[9.5px] font-extrabold text-yellow-300 leading-snug tracking-wide italic editable-text" data-key="s0-subtitle">
+                            ✨ "Em nhất định sẽ rinh học bổng và tốt nghiệp Thủ khoa!" ✨
+                        </p>
+                        <p id="video-stat-mood" class="text-[8px] font-bold text-slate-300 editable-text" data-key="s0-mood">
+                            🌸 Trạng thái: Tràn trề hy vọng & mộng mơ
+                        </p>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <!-- THANH DẪN TRUYỆN SANG SLIDE KẾ TIẾP -->
+            <div id="box-s0-teaser" onclick="nextSlide()" class="draggable-box cursor-pointer bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 p-2 rounded-xl shadow-md border border-amber-500 w-full flex items-center justify-center gap-1.5 sticker-badge hover:scale-[1.02] active:scale-95 transition">
+                <span class="text-sm animate-bounce">👉</span>
+                <p class="text-[11px] text-slate-900 font-black editable-text" data-key="s0-teaser">
+                    Hành trình rực rỡ khép lại! Bấm Tiếp theo để xem lễ tốt nghiệp nhé! 🎓🎉
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 1: BIẾN HÌNH & TẢI ẢNH CÁ NHÂN -->
+        <div id="slide-1" class="slide-card absolute inset-0 p-3.5 pt-8 pb-16 flex flex-col justify-between items-center text-center opacity-0 pointer-events-none z-10 transition-all overflow-y-auto no-scrollbar">
+            <div id="box-s1-header" class="draggable-box relative w-full z-10">
+                <div class="flex items-center justify-center gap-1.5 mb-1">
+                    <span class="sticker-badge bg-emerald-500 text-white font-black text-[10px] px-3 py-1 rounded-full shadow-md uppercase tracking-wider animate-bounce editable-text" data-key="s1-badge1">
+                        🎓 LỘT XÁC THÀNH CÔNG
+                    </span>
+                    <span class="sticker-badge bg-pink-500 text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-sm -rotate-3 editable-text" data-key="s1-badge2">
+                        💯 APPROVED
+                    </span>
+                </div>
+                <h2 class="font-black text-2xl leading-tight tracking-tight neon-text editable-text" data-key="s1-title">
+                    TỚ SỐNG SÓT & TỐT NGHIỆP RỒI! 🎉
+                </h2>
+            </div>
+
+            <!-- Uploadable Photo Container Frame with Playful Stickers -->
+            <div id="box-s1-photo" class="draggable-box w-full my-auto px-1 relative">
+                <!-- Corner Decoration Stickers - positioned outside content area -->
+                <div id="box-s1-badge-cap" class="draggable-box draggable-sticker absolute -top-4 -left-1 z-20 sticker-badge bg-pink-400 text-white font-black text-[10px] px-2.5 py-1 rounded-xl shadow-md border border-white -rotate-12">
+                    🎀 CỬ NHÂN XỊN
+                </div>
+
+                <div class="relative w-full h-52 sm:h-64 bg-gradient-to-tr from-sky-200 via-yellow-100 to-pink-200 rounded-3xl p-2.5 border-4 border-dashed border-ueh-blue/50 shadow-2xl flex flex-col items-center justify-center overflow-hidden group">
+                    
+                    <input type="file" id="user-photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+                    
+                    <!-- Default Cartoon Photo Graphic (Tân Cử Nhân Cartoon) -->
+                    <div id="default-photo-graphic" class="flex flex-col items-center justify-center w-full h-full overflow-hidden rounded-2xl">
+                        <img src="nam4_cartoon.jpg" alt="Tân Cử Nhân Hoạt Hình" class="w-full h-full object-cover object-top hover:scale-105 transition duration-500">
+                    </div>
+
+                    <img id="uploaded-img" src="" class="hidden w-full h-full object-cover rounded-2xl shadow-md">
+
+                    <!-- Overlay Upload Button (Ẩn khi bạn bè xem thiệp) -->
+                    <label for="user-photo-input" class="admin-control-btn absolute inset-x-4 bottom-3 bg-ueh-blue/90 hover:bg-ueh-blue text-white font-black text-xs py-2.5 px-3 rounded-2xl backdrop-blur shadow-lg cursor-pointer flex items-center justify-center gap-1.5 hover:scale-105 transition active:scale-95 border-2 border-yellow-300">
+                        <i data-lucide="camera" class="w-4 h-4 text-ueh-gold animate-bounce"></i>
+                        <span id="upload-btn-text">📸 Ghép ảnh tốt nghiệp của bạn vào đây</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="box-s1-footer" class="draggable-box sticker-badge bg-white/95 py-2 px-4 rounded-xl shadow-md border border-slate-200">
+                <p class="text-slate-800 font-extrabold text-xs flex items-center justify-center gap-1 editable-text" data-key="s1-footer">
+                    <span>Nộp bài đúng hạn - Ra trường đúng hạn! 😎🎓</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: THÂN MỜI (HOẠT HỌA CHUYỂN ĐỘNG SINH ĐỘNG) -->
+        <div id="slide-2" class="slide-card absolute inset-0 p-6 flex flex-col justify-center items-center text-center opacity-0 pointer-events-none z-10 transition-all overflow-hidden">
+            
+            <!-- 🎊 LỚP CONFETTI & NGÔI SAO BAY LƠ LỬNG XUNG QUANH -->
+            <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+                <span class="floating-confetti-particle text-sm" style="top: 18%; left: 12%; animation-delay: 0s;">✨</span>
+                <span class="floating-confetti-particle text-xs" style="top: 25%; right: 14%; animation-delay: 1.2s;">⭐</span>
+                <span class="floating-confetti-particle text-base" style="bottom: 24%; left: 10%; animation-delay: 2.5s;">🎉</span>
+                <span class="floating-confetti-particle text-xs" style="bottom: 20%; right: 12%; animation-delay: 3.7s;">💫</span>
+                <span class="floating-confetti-particle text-xs" style="top: 48%; left: 6%; animation-delay: 1.8s;">🌸</span>
+                <span class="floating-confetti-particle text-xs" style="top: 52%; right: 8%; animation-delay: 3.1s;">💎</span>
+            </div>
+
+            <div class="w-full max-w-[340px] my-auto relative z-10">
+                
+                <!-- 🎓 MŨ CỬ NHÂN TUNG BAY LƠ LỬNG TRÊN ĐẦU KHUNG THIỆP -->
+                <div id="box-s2-cap" class="draggable-box w-24 h-16 mx-auto -mb-4 relative z-20 anim-floating-cap filter drop-shadow-lg editable-text" data-key="s2-cap">
+                    <svg viewBox="0 0 100 70" class="w-full h-full" fill="none">
+                        <!-- Nón cử nhân màu xanh UEH viền vàng -->
+                        <polygon points="50,10 92,26 50,42 8,26" fill="#003B71" stroke="#FFB800" stroke-width="2"/>
+                        <!-- Đỉnh nón -->
+                        <circle cx="50" cy="26" r="3.5" fill="#FFB800"/>
+                        <!-- Tua rua vàng lắc lư nhịp nhàng -->
+                        <g class="anim-cap-tassel">
+                            <line x1="50" y1="26" x2="78" y2="40" stroke="#FFB800" stroke-width="2.5" stroke-linecap="round"/>
+                            <ellipse cx="79" cy="46" rx="4" ry="7" fill="#FFB800"/>
+                        </g>
+                        <!-- Vòm mũ bên dưới -->
+                        <path d="M26,33 L26,46 C26,54 37,60 50,60 C63,60 74,54 74,46 L74,33" fill="#002244" opacity="0.9"/>
+                    </svg>
+                </div>
+
+                <!-- Khung Thân Mời Tối Giản, Mạ Vàng Phát Sáng Óng Ánh -->
+                <div id="box-s2-card" class="draggable-box gold-shimmer-card rounded-3xl p-6 sm:p-7 shadow-2xl space-y-3.5">
+                    <div class="text-base font-black text-slate-700 tracking-wider flex items-center justify-center gap-2">
+                        <span class="editable-text" data-key="s2-prefix">Thân mời</span>
+                        <span class="anim-heartbeat text-pink-500 text-xl">❤️</span>
+                    </div>
+
+                    <!-- Input Tên Người Nhận -->
+                    <div class="relative">
+                        <input type="text" id="guest-name-input" value="Bạn Cực Phẩm ❤️" placeholder="Nhập tên tại đây..." class="w-full text-center font-black text-2xl text-ueh-blue bg-amber-50/90 border-2 border-dashed border-amber-400 rounded-2xl py-3 px-4 focus:outline-none focus:bg-white focus:border-ueh-blue transition shadow-inner">
+                    </div>
+
+                    <!-- Dòng chữ: Đến dự lễ tốt nghiệp của Mai Ziên (Có thể chỉnh sửa hoặc xóa) -->
+                    <div id="box-s2-subtitle" class="draggable-box pt-0.5 text-center">
+                        <p class="text-sm sm:text-base font-black text-slate-700 leading-snug editable-text" data-key="s2-subtitle">
+                            Đến dự lễ tốt nghiệp của Mai Ziên 🎓✨
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SLIDE 3: THÔNG TIN LỄ TỐT NGHIỆP -->
+        <div id="slide-3" class="slide-card absolute inset-0 p-3.5 pt-8 pb-16 flex flex-col justify-between items-center text-center opacity-0 pointer-events-none z-10 transition-all overflow-y-auto no-scrollbar">
+            <div id="box-s3-header" class="draggable-box relative w-full z-10">
+                <div class="flex items-center justify-center gap-1.5 mb-1">
+                    <span class="sticker-badge bg-sky-500 text-white font-black text-[10px] px-3 py-1 rounded-full shadow-md uppercase tracking-wider border border-sky-300 editable-text" data-key="s3-badge1">
+                        📌 SAVE THE DATE
+                    </span>
+                    <span class="sticker-badge bg-amber-400 text-slate-900 font-black text-[10px] px-2 py-0.5 rounded-full shadow-sm rotate-6 editable-text" data-key="s3-badge2">
+                        ⏰ 15:00 PM
+                    </span>
+                </div>
+                <h2 class="font-black text-2xl neon-text editable-text" data-key="s3-title">
+                    ĐẾN CHUNG VUI VỚI TỚ NHÉ! 🎉
+                </h2>
+            </div>
+
+            <!-- Mini Presenter Cartoon + Event Details Card -->
+            <div class="w-full space-y-2 my-auto relative">
+                <!-- Nhân Vật Hoạt Hình Cử Nhân Tươi Cười Chào Đón Khách -->
+                <div id="box-s3-presenter" class="draggable-box w-16 h-14 mx-auto -mb-2 relative z-20 animate-bounce-subtle">
+                    <svg class="w-full h-full drop-shadow-md" viewBox="0 0 80 64" fill="none">
+                        <!-- Thân áo cử nhân xanh viền vàng -->
+                        <path d="M22 56 L40 44 L58 56 L62 64 H18 Z" fill="#003B71"/>
+                        <path d="M37 46 L40 56 L43 46" stroke="#FFB800" stroke-width="2"/>
+                        <!-- Nơ cổ đỏ trang trọng -->
+                        <polygon points="36,44 40,47 44,44 40,41" fill="#FF5376"/>
+                        <!-- Cổ & Khuôn mặt -->
+                        <circle cx="40" cy="30" r="16" fill="#FFE0BD"/>
+                        <!-- Nón cử nhân vuông vắn -->
+                        <polygon points="40,8 64,17 40,26 16,17" fill="#0F172A"/>
+                        <line x1="52" y1="21" x2="60" y2="30" stroke="#FFB800" stroke-width="2"/>
+                        <circle cx="60" cy="31" r="2" fill="#FFB800"/>
+                        <!-- Tóc mái cute -->
+                        <path d="M26 26 C26 18 36 17 40 17 C44 17 54 18 54 26 Z" fill="#291D18"/>
+                        <!-- Mắt cười long lanh -->
+                        <circle cx="34" cy="29" r="2.5" fill="#1E293B"/>
+                        <circle cx="46" cy="29" r="2.5" fill="#1E293B"/>
+                        <circle cx="35" cy="28" r="0.8" fill="#FFFFFF"/>
+                        <circle cx="47" cy="28" r="0.8" fill="#FFFFFF"/>
+                        <!-- Má hồng -->
+                        <circle cx="30" cy="33" r="2" fill="#FF8DA1"/>
+                        <circle cx="50" cy="33" r="2" fill="#FF8DA1"/>
+                        <!-- Miệng cười tươi hớn hở -->
+                        <path d="M36 34 Q40 39 44 34" stroke="#1E293B" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        <!-- Tay vẫy chào mừng -->
+                        <ellipse cx="18" cy="46" rx="4" ry="4" fill="#FFE0BD"/>
+                        <ellipse cx="62" cy="46" rx="4" ry="4" fill="#FFE0BD"/>
+                    </svg>
+                </div>
+
+                <div id="box-s3-card" class="draggable-box w-full bg-white/95 backdrop-blur-md rounded-3xl p-3.5 sm:p-4 shadow-2xl border-2 border-sky-300 text-left relative overflow-hidden space-y-2">
+                    <!-- Ticket Header Ribbon -->
+                    <div class="bg-gradient-to-r from-ueh-blue to-sky-600 text-white font-black text-[11px] py-1 px-3 -mx-4 -mt-4 mb-2 flex items-center justify-between border-b-2 border-yellow-300">
+                        <span class="editable-text flex items-center gap-1" data-key="s3-ticket-title">
+                            <i data-lucide="ticket" class="w-3.5 h-3.5 text-yellow-300"></i>
+                            <span>UEH GRADUATION TICKET</span>
+                        </span>
+                        <span class="text-yellow-300 font-bold editable-text" data-key="s3-ticket-campus">🏛️ CƠ SỞ A</span>
+                    </div>
+                    
+                    <!-- Time -->
+                    <div class="flex items-start gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-amber-300">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Thời gian đón khách</div>
+                            <div class="font-black text-sm text-slate-800 editable-text" data-key="s3-time">15:00 - Chiều</div>
+                            <div class="text-xs font-black text-ueh-blue editable-text" data-key="s3-date">Thứ Bảy, Ngày 26/09/2026</div>
+                        </div>
+                    </div>
+
+                    <hr class="border-dashed border-slate-200 my-0.5">
+
+                    <!-- Location -->
+                    <div class="flex items-start gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-blue-100 text-ueh-blue flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-blue-300">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Địa điểm tổ chức</div>
+                            <div class="font-black text-sm text-ueh-blue editable-text" data-key="s3-venue">UEH - CƠ SỞ A</div>
+                            <div class="text-[10.5px] font-bold text-slate-600 mt-0.5 leading-snug editable-text" data-key="s3-address">
+                                59C Nguyễn Đình Chiểu, P. Võ Thị Sáu, Q.3, TP.HCM
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map Link Button -->
+                    <a href="https://maps.google.com/?q=UEH+C%C6%A1+s%E1%BB%9F+A+59C+Nguy%E1%BB%85n+%C2%90%C3%ACnh+Chi%E1%BB%83u" target="_blank" class="w-full py-2 bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-500 hover:to-yellow-400 text-slate-900 font-black text-xs rounded-xl shadow flex items-center justify-center gap-1.5 transition border border-amber-500 active:scale-95 cursor-pointer">
+                        <i data-lucide="navigation" class="w-3.5 h-3.5 text-ueh-blue"></i>
+                        <span>Mở Google Maps chỉ đường 🗺️</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer sticker badge Slide 3 -->
+            <div id="box-s3-footer" class="draggable-box sticker-badge bg-white/95 py-1.5 px-3 rounded-xl shadow-md border border-slate-200">
+                <p class="text-[11px] text-slate-800 font-extrabold flex items-center justify-center gap-1 editable-text" data-key="s3-footer">
+                    <span>🎉 Chỉ cần bạn đến là ấm lòng thủ khoa! Hẹn gặp bạn nhé! 🥰</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 4 (SLIDE 5 TRÊN MÀN HÌNH): LỜI MỜI, GHÉP ẢNH KỶ NIỆM VÀ XÁC NHẬN RSVP -->
+        <div id="slide-4" class="slide-card absolute inset-0 p-3.5 pt-7 pb-16 flex flex-col justify-between items-center text-center opacity-0 pointer-events-none z-10 transition-all overflow-y-auto no-scrollbar">
+            <div id="box-s4-header" class="draggable-box relative w-full z-10">
+                <div class="flex items-center justify-center gap-1 mb-0.5">
+                    <span class="sticker-badge bg-pink-500 text-white font-black text-[9.5px] px-2.5 py-0.5 rounded-full shadow-md uppercase tracking-wider border border-pink-300 animate-bounce editable-text" data-key="s4-badge1">
+                        💌 MESSAGES FROM GRADUATE
+                    </span>
+                    <span class="sticker-badge bg-emerald-400 text-slate-900 font-black text-[9.5px] px-2 py-0.5 rounded-full shadow-sm -rotate-3 editable-text" data-key="s4-badge2">
+                        🧋 REFILL BOBA
+                    </span>
+                </div>
+                <h2 class="font-black text-xl sm:text-2xl leading-snug neon-text editable-text" data-key="s4-title">
+                    SỰ CÓ MẶT CỦA BẠN<br>LÀ NIỀM VINH HẠNH! ❤️
+                </h2>
+            </div>
+
+            <!-- Uploadable Photo Container Frame #2 for Slide 5 -->
+            <div id="box-s4-photo" class="draggable-box w-full my-auto px-1 relative">
+                <!-- Neatly Placed Corner Stickers - No Overlapping -->
+                <div id="box-s4-corner1" class="draggable-box draggable-sticker absolute -top-3 left-1 z-20 sticker-badge bg-amber-300 text-slate-900 font-black text-[9.5px] px-2 py-0.5 rounded-xl shadow-lg border-2 border-slate-800 -rotate-12 animate-float editable-text" data-key="s4-corner1">
+                    🧋 70% ĐƯỜNG 30% ĐÁ
+                </div>
+                <div id="box-s4-corner2" class="draggable-box draggable-sticker absolute -top-3 right-1 z-20 sticker-badge bg-pink-300 text-slate-900 font-black text-[9.5px] px-2 py-0.5 rounded-xl shadow-lg border-2 border-slate-800 rotate-12 animate-float-reverse editable-text" data-key="s4-corner2">
+                    📸 CHỤP 1000 TẤM
+                </div>
+
+                <div class="relative w-full h-44 sm:h-52 bg-gradient-to-tr from-pink-200 via-yellow-100 to-sky-200 rounded-3xl p-2 border-4 border-dashed border-pink-400 shadow-2xl flex flex-col items-center justify-center overflow-hidden group">
+                    
+                    <input type="file" id="user-photo-input-2" accept="image/*" class="hidden" onchange="handlePhotoUpload2(event)">
+                    
+                    <!-- Default Boba Graphic for Slide 5 (Có thể xóa hoặc thay thế bằng ảnh) -->
+                    <div id="default-photo-graphic-2" class="flex flex-col items-center justify-center w-full h-full editable-text" data-key="s4-graphic">
+                        <svg class="w-32 h-32 sm:w-36 sm:h-36 animate-bounce-subtle" viewBox="0 0 200 200" fill="none">
+                            <path d="M60 70 L72 175 C73 180 78 185 84 185 H116 C122 185 127 180 128 175 L140 70 Z" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
+                            <ellipse cx="100" cy="70" rx="42" ry="9" fill="#F59E0B"/>
+                            <rect x="106" y="20" width="9" height="60" rx="2" fill="#EF4444" transform="rotate(12 106 20)"/>
+                            <circle cx="82" cy="160" r="7" fill="#451A03"/>
+                            <circle cx="100" cy="166" r="7" fill="#451A03"/>
+                            <circle cx="118" cy="158" r="7" fill="#451A03"/>
+                            <circle cx="145" cy="95" r="22" fill="#FFE0BD"/>
+                            <path d="M128 85 C128 72 140 68 145 68 C150 68 162 72 162 85 Z" fill="#4A3728"/>
+                            <path d="M125 72 L145 62 L165 72 L145 80 Z" fill="#0F172A"/>
+                            <circle cx="138" cy="95" r="2.5" fill="#1E293B"/>
+                            <circle cx="152" cy="95" r="2.5" fill="#1E293B"/>
+                            <path d="M140 102 Q145 107 150 102" stroke="#1E293B" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        </svg>
+                    </div>
+
+                    <img id="uploaded-img-2" src="" class="hidden w-full h-full object-cover rounded-2xl shadow-md">
+
+                    <!-- Overlay Upload Button (Ẩn khi bạn bè xem thiệp) -->
+                    <label for="user-photo-input-2" class="admin-control-btn absolute inset-x-4 bottom-2 bg-pink-600/90 hover:bg-pink-600 text-white font-black text-xs py-2 px-3 rounded-2xl backdrop-blur shadow-lg cursor-pointer flex items-center justify-center gap-1.5 hover:scale-105 transition active:scale-95 border-2 border-yellow-300">
+                        <i data-lucide="image-plus" class="w-4 h-4 text-yellow-300 animate-bounce"></i>
+                        <span id="upload-btn-text-2">📸 Ghép thêm ảnh kỷ niệm của bạn vào đây</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="box-s4-footer" class="draggable-box sticker-badge bg-white/95 p-2 rounded-2xl border-2 border-pink-300 shadow-md w-full">
+                <p class="text-[11px] text-slate-800 font-extrabold leading-relaxed editable-text" data-key="s4-footer">
+                    Đến chụp thật nhiều hình kỷ niệm đẹp cùng tớ nhé! 🎉✨
+                </p>
+            </div>
+
+            <!-- RSVP Action Buttons: Đồng ý & Từ chối khéo léo -->
+            <div id="box-s4-rsvp" class="draggable-box w-full flex flex-col gap-1.5 pt-0.5">
+                <!-- NÚT 1: ĐỒNG Ý THAM DỰ -->
+                <button id="btn-rsvp-accept" onclick="triggerRSVPAccept()" class="neon-btn w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black py-2.5 px-4 rounded-2xl shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2 transform active:scale-95 transition text-sm border-2 border-yellow-300 cursor-pointer animate-pulse-glow">
+                    <i data-lucide="party-popper" class="w-4 h-4 text-yellow-300 animate-bounce"></i>
+                    <span id="text-rsvp-accept" class="editable-text" data-key="s4-rsvp-accept">🥳 Đi chứ, chắc chắn tới quẩy cùng bạn!</span>
+                </button>
+
+                <!-- NÚT 2: TỪ CHỐI KHÉO LÉO & ẤM ÁP -->
+                <button id="btn-rsvp-decline" onclick="triggerRSVPDecline()" class="w-full bg-white/95 hover:bg-white text-slate-700 hover:text-pink-600 font-extrabold py-2 px-3 rounded-xl shadow-sm border border-pink-300 flex items-center justify-center gap-1.5 transform active:scale-95 transition text-xs cursor-pointer">
+                    <span id="text-rsvp-decline" class="editable-text" data-key="s4-rsvp-decline">🥺 Tiếc quá hôm đó bận rùi, xin lũi bạn nha! ❤️</span>
+                </button>
+
+                <!-- Dòng thông báo trạng thái đã phản hồi -->
+                <div id="rsvp-status-badge" class="hidden text-[10.5px] font-bold py-1 px-3 rounded-full bg-amber-100/90 text-amber-900 border border-amber-300 shadow-sm transition-all flex items-center justify-center gap-1">
+                    <span id="rsvp-status-icon">✅</span>
+                    <span id="rsvp-status-text">Bạn đã xác nhận tham dự!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM FIXED NAVIGATION CONTROLS -->
+        <div class="absolute bottom-3 sm:bottom-4 left-3 right-3 z-50 flex items-center justify-between gap-1.5 nav-bar p-1.5 rounded-2xl border-2 border-slate-200 backdrop-blur-md bg-white/95 shadow-xl select-none">
+            <button type="button" id="btn-prev" onclick="prevSlide()" class="flex-1 min-h-[40px] bg-slate-100 hover:bg-slate-200 text-slate-800 font-black py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition active:scale-95 disabled:opacity-40 disabled:pointer-events-none cursor-pointer">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                <span>Quay lại</span>
+            </button>
+
+            <!-- ✏️ Edit Mode Toggle (Chỉ hiện cho Chủ Thiệp) -->
+            <button type="button" id="btn-edit-mode" onclick="toggleEditMode()" class="admin-control-btn min-h-[40px] bg-slate-100 hover:bg-slate-200 text-slate-800 font-black py-2 px-3 rounded-xl text-xs flex items-center justify-center transition active:scale-95 cursor-pointer" title="Chế độ chỉnh sửa thiệp">
+                <i data-lucide="pencil" class="w-4 h-4 text-amber-600"></i>
+            </button>
+
+            <!-- 📋 Admin / Google Sheet & RSVP Manager (Chỉ hiện cho Chủ Thiệp) -->
+            <button type="button" id="btn-admin-rsvp" onclick="openAdminRSVPModal()" class="admin-control-btn min-h-[40px] bg-slate-100 hover:bg-emerald-100 text-slate-800 hover:text-emerald-700 font-black py-2 px-2.5 rounded-xl text-xs flex items-center justify-center transition active:scale-95 border border-slate-300 cursor-pointer" title="Quản lý RSVP & Google Sheet (Dành cho chủ tiệc)">
+                <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-600"></i>
+            </button>
+
+            <!-- 🔄 Reset All (Chỉ hiện cho Chủ Thiệp) -->
+            <button type="button" id="btn-reset-edits" onclick="resetAllEdits()" class="admin-control-btn min-h-[40px] bg-slate-100 hover:bg-slate-200 text-slate-800 font-black py-2 px-2.5 rounded-xl text-xs flex items-center justify-center transition active:scale-95 cursor-pointer" title="Khôi phục mặc định">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-500"></i>
+            </button>
+
+            <button type="button" id="btn-next" onclick="nextSlide()" class="neon-btn flex-1 min-h-[40px] bg-ueh-blue hover:bg-blue-900 text-white font-black py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-md shadow-blue-900/20 border border-yellow-300 cursor-pointer pointer-events-auto">
+                <span id="btn-next-text">Tiếp theo</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-ueh-gold"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- RSVP Modal Pop-up (Đa năng cho cả Đồng ý và Từ chối khéo) -->
+    <div id="rsvp-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl border-4 border-amber-400 transform scale-90 transition-transform duration-300 relative overflow-hidden" id="modal-content">
+            <div id="rsvp-modal-icon" class="w-16 h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto text-3xl border-2 border-amber-300 shadow-md">
+                🥳
+            </div>
+            <h3 id="rsvp-modal-title" class="font-black text-xl text-ueh-blue">HẸN GẶP BẠN NHA! 🎉</h3>
+            <p id="rsvp-modal-desc" class="text-xs text-slate-700 leading-relaxed font-extrabold">
+                Cảm ơn bạn! Tớ đã ghi nhớ lịch hẹn <strong class="text-ueh-blue">15:00 ngày 26/09/2026</strong> tại <strong class="text-ueh-blue">UEH Cơ sở A</strong> rồi nha.
+            </p>
+            <button id="rsvp-modal-btn" onclick="closeModal()" class="w-full bg-ueh-blue text-white font-black py-3 rounded-xl shadow-lg hover:bg-blue-900 transition text-xs border border-yellow-300 cursor-pointer">
+                Đã ghi nhớ lịch hẹn! ❤️
+            </button>
+        </div>
+    </div>
+
+    <!-- ✍️ MODAL HỎI TÊN KHÁCH MỜI (Nếu chưa có tên khi bấm RSVP) -->
+    <div id="name-prompt-modal" class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl border-4 border-ueh-blue relative overflow-hidden">
+            <div class="w-14 h-14 bg-sky-100 text-ueh-blue rounded-full flex items-center justify-center mx-auto text-2xl border-2 border-sky-300 shadow">
+                💌
+            </div>
+            <div>
+                <h3 class="font-black text-lg text-ueh-blue">Bạn cho tớ xin tên nhé!</h3>
+                <p class="text-xs text-slate-500 font-semibold mt-1">Để chủ tiệc ghi tên bạn vào sổ điểm danh lưu niệm nha ✨</p>
+            </div>
+            <div class="text-left">
+                <label class="text-[11px] font-black text-slate-700 mb-1 block">Tên của bạn:</label>
+                <input type="text" id="prompt-guest-name-input" placeholder="Ví dụ: Lan Anh, Tuấn Kiệt..." class="w-full font-bold text-sm text-slate-800 bg-slate-50 border-2 border-slate-300 rounded-xl py-2.5 px-3 focus:outline-none focus:border-ueh-blue focus:bg-white transition">
+            </div>
+            <div class="flex gap-2">
+                <button type="button" onclick="closeNamePromptModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs rounded-xl transition">
+                    Hủy bỏ
+                </button>
+                <button type="button" onclick="submitNamePromptRSVP()" class="flex-1 py-2.5 bg-gradient-to-r from-ueh-blue to-blue-800 text-white font-black text-xs rounded-xl shadow hover:scale-105 active:scale-95 transition">
+                    Gửi phản hồi ✨
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 ADMIN DASHBOARD MODAL: QUẢN LÝ RSVP, TẠO LINK & GOOGLE SHEET -->
+    <div id="admin-rsvp-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-5 max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl border-4 border-amber-400 relative overflow-hidden">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b pb-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700">
+                        <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="font-black text-base text-slate-800">Quản Lý RSVP & Khách Mời</h3>
+                        <p class="text-[10px] font-bold text-slate-500">Dành cho chủ nhân thiệp tốt nghiệp</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminRSVPModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="flex bg-slate-100 p-1 rounded-xl my-3 gap-1">
+                <button id="admin-tab-btn-list" onclick="switchAdminTab('list')" class="flex-1 py-1.5 rounded-lg text-xs font-black transition bg-white text-ueh-blue shadow-sm">
+                    📊 Danh Sách
+                </button>
+                <button id="admin-tab-btn-links" onclick="switchAdminTab('links')" class="flex-1 py-1.5 rounded-lg text-xs font-black transition text-slate-600 hover:text-slate-900">
+                    🔗 Tạo Link Gửi
+                </button>
+                <button id="admin-tab-btn-sheet" onclick="switchAdminTab('sheet')" class="flex-1 py-1.5 rounded-lg text-xs font-black transition text-slate-600 hover:text-slate-900">
+                    ⚙️ Google Sheet
+                </button>
+                <button id="admin-tab-btn-music" onclick="switchAdminTab('music')" class="flex-1 py-1.5 rounded-lg text-xs font-black transition text-slate-600 hover:text-slate-900">
+                    🎵 Nhạc Nền
+                </button>
+            </div>
+
+            <!-- Tab Content Area (Scrollable) -->
+            <div class="flex-1 overflow-y-auto pr-1 space-y-3">
+                
+                <!-- TAB 1: DANH SÁCH RSVP -->
+                <div id="admin-tab-list" class="space-y-3">
+                    <!-- Thống kê nhanh -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border text-center">
+                            <span class="text-[10px] font-bold text-slate-500 block">Tổng phản hồi</span>
+                            <span id="stat-total" class="text-lg font-black text-slate-800">0</span>
+                        </div>
+                        <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200 text-center">
+                            <span class="text-[10px] font-bold text-emerald-600 block">Sẽ đến 🎉</span>
+                            <span id="stat-accept" class="text-lg font-black text-emerald-700">0</span>
+                        </div>
+                        <div class="bg-rose-50 p-2.5 rounded-xl border border-rose-200 text-center">
+                            <span class="text-[10px] font-bold text-rose-600 block">Bận tiếc 🥺</span>
+                            <span id="stat-decline" class="text-lg font-black text-rose-700">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Bảng danh sách phản hồi -->
+                    <div class="border rounded-2xl overflow-hidden shadow-inner bg-slate-50/50">
+                        <div class="max-h-48 overflow-y-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead class="bg-slate-100 text-slate-700 font-extrabold sticky top-0 border-b">
+                                    <tr>
+                                        <th class="p-2">Tên khách</th>
+                                        <th class="p-2">Quyết định</th>
+                                        <th class="p-2 text-right">Thời gian</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-rsvp-table-body" class="divide-y divide-slate-100 bg-white font-medium text-slate-700">
+                                    <tr>
+                                        <td colspan="3" class="p-4 text-center text-slate-400 font-bold">Chưa có ai gửi phản hồi</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Nút thao tác -->
+                    <div class="flex gap-2 pt-1">
+                        <button onclick="exportRSVPToCSV()" class="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow flex items-center justify-center gap-1.5 transition">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                            <span>Tải file Excel (.CSV)</span>
+                        </button>
+                        <button onclick="clearRSVPRecords()" class="py-2 px-3 bg-slate-100 hover:bg-rose-100 text-slate-600 hover:text-rose-700 font-bold text-xs rounded-xl transition" title="Xóa danh sách">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TAB 2: TẠO LINK GỬI TỪNG BẠN (KÈM ẢNH KỶ NIỆM RIÊNG) -->
+                <div id="admin-tab-links" class="hidden space-y-3 text-left">
+                    
+                    <!-- Cảnh báo & Hướng dẫn Base Web URL nếu đang chạy file:/// -->
+                    <div class="bg-amber-50 border border-amber-300 rounded-2xl p-3 space-y-1.5">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm">💡</span>
+                            <span class="text-[11px] font-black text-amber-900 uppercase tracking-wide">Địa chỉ Website thiệp (Để gửi Zalo / Messenger):</span>
+                        </div>
+                        <input type="text" id="admin-base-website-url" placeholder="https://thiep-tot-nghiep.netlify.app" class="w-full text-xs font-mono bg-white border border-amber-300 rounded-xl py-2 px-2.5 text-slate-800 focus:outline-none focus:border-ueh-blue">
+                        <p class="text-[10px] text-slate-600 font-medium leading-relaxed">
+                            ⚠️ Khi mở từ máy tính (<code class="text-amber-800">file:///...</code>), Zalo/Messenger sẽ <strong>không coi đây là link để bấm được</strong>. Hãy nhập địa chỉ website sau khi đưa lên mạng (hoặc xem hướng dẫn kéo thả miễn phí bên dưới) để link có màu xanh bấm mở được nhé!
+                        </p>
+                    </div>
+
+                    <!-- Form thông tin bạn bè -->
+                    <div class="space-y-2.5 bg-slate-50 border border-slate-200 p-3 rounded-2xl">
+                        <div>
+                            <label class="text-[11px] font-black text-slate-700 block mb-1">
+                                👤 1. Tên người bạn muốn mời <span class="text-rose-500">*</span>:
+                            </label>
+                            <input type="text" id="generator-friend-name" placeholder="Ví dụ: Hoàng Yến, Minh Nhật, Tuấn Kiệt..." class="w-full text-xs font-bold text-slate-800 bg-white border-2 border-slate-300 rounded-xl py-2 px-3 focus:outline-none focus:border-ueh-blue transition">
+                        </div>
+
+                        <div>
+                            <label class="text-[11px] font-black text-slate-700 block mb-1">
+                                💌 2. Lời nhắn riêng gửi bạn này (Tùy chọn):
+                            </label>
+                            <input type="text" id="generator-friend-message" placeholder="Ví dụ: Nhớ đến chụp thật nhiều hình kỷ niệm cùng tớ nha!..." class="w-full text-xs font-medium text-slate-800 bg-white border-2 border-slate-300 rounded-xl py-2 px-3 focus:outline-none focus:border-ueh-blue transition">
+                        </div>
+
+                        <!-- 📸 Chèn ảnh kỷ niệm riêng -->
+                        <div>
+                            <label class="text-[11px] font-black text-slate-700 block mb-1">
+                                📸 3. Ảnh kỷ niệm chụp chung với bạn này:
+                            </label>
+                            
+                            <!-- Cách 1: Chọn ảnh từ máy tính -->
+                            <div class="flex items-center gap-2">
+                                <label for="generator-friend-photo-input" class="flex-1 py-2 px-3 bg-white border-2 border-dashed border-pink-400 hover:border-pink-600 rounded-xl cursor-pointer text-center text-xs font-bold text-pink-700 hover:bg-pink-50 transition flex items-center justify-center gap-1.5 shadow-sm">
+                                    <i data-lucide="image-plus" class="w-4 h-4 text-pink-500"></i>
+                                    <span id="generator-photo-btn-text">Chọn ảnh kỷ niệm từ máy</span>
+                                </label>
+                                <input type="file" id="generator-friend-photo-input" accept="image/*" class="hidden" onchange="handleFriendPhotoSelected(event)">
+                            </div>
+
+                            <!-- Hoặc Dán Link Ảnh Online -->
+                            <div class="mt-1.5">
+                                <input type="text" id="generator-friend-photo-url" placeholder="Hoặc dán đường link ảnh (URL) vào đây..." class="w-full text-[11px] font-mono bg-white border border-slate-300 rounded-xl py-1.5 px-2.5 text-slate-700 focus:outline-none focus:border-ueh-blue">
+                            </div>
+
+                            <!-- Khung xem trước ảnh kỷ niệm -->
+                            <div id="generator-photo-preview-box" class="hidden mt-2 p-2 bg-white rounded-xl border border-pink-200 flex items-center gap-3">
+                                <img id="generator-photo-preview-img" src="" class="w-14 h-14 object-cover rounded-lg shadow border border-slate-200">
+                                <div class="flex-1 text-[11px]">
+                                    <span class="font-black text-slate-800 block">✓ Đã chọn ảnh kỷ niệm!</span>
+                                    <span class="text-slate-500 text-[10px] block">Ảnh này sẽ hiện ở Slide kỷ niệm khi bạn ấy mở thiệp.</span>
+                                </div>
+                                <button type="button" onclick="removeFriendPhotoSelected()" class="text-rose-500 hover:text-rose-700 p-1.5" title="Gỡ ảnh">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Nút Tạo Link -->
+                        <button type="button" onclick="generateCustomInviteLink()" class="w-full py-2.5 bg-gradient-to-r from-amber-400 via-rose-400 to-pink-500 hover:scale-[1.02] text-white font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition active:scale-95 border border-white/50">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-yellow-200"></i>
+                            <span>Tạo & Sao Chép Link Thiệp Riêng</span>
+                        </button>
+                    </div>
+
+                    <!-- Link Preview Output Box -->
+                    <div id="generated-link-container" class="hidden bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-3 text-left space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-black text-emerald-900 uppercase tracking-wider flex items-center gap-1">
+                                <span>🎉</span> Link dành riêng cho <span id="preview-target-name" class="underline">Bạn</span>:
+                            </span>
+                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-200/80 px-2 py-0.5 rounded-full">✓ Đã copy!</span>
+                        </div>
+                        <input type="text" id="generated-link-input" readonly class="w-full text-xs font-mono bg-white border border-emerald-200 rounded-xl p-2 text-slate-800 focus:outline-none select-all shadow-inner">
+                        
+                        <div class="flex gap-2 pt-0.5">
+                            <button type="button" onclick="copyGeneratedLinkAgain()" class="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                <span>Sao chép lại</span>
+                            </button>
+                            <button type="button" onclick="previewGeneratedLinkInNewTab()" class="flex-1 py-1.5 bg-white hover:bg-slate-50 text-emerald-800 border border-emerald-400 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                <span>Mở xem thử thiệp</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mini Guide 30s Hosting -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-2.5 text-[10px] text-slate-700 space-y-1">
+                        <strong class="text-ueh-blue font-black flex items-center gap-1">
+                            <span>🚀</span> Cách có link web để gửi Zalo/Messenger trong 30 giây (Miễn phí):
+                        </strong>
+                        <p>1. Vào trang <strong>app.netlify.com/drop</strong> trên trình duyệt.</p>
+                        <p>2. Kéo cả thư mục chứa thiệp thả vào trang web đó $\rightarrow$ Bạn sẽ có ngay link web (ví dụ <code>https://thiep-tot-nghiep.netlify.app</code>).</p>
+                        <p>3. Dán link đó vào ô <em>Địa chỉ Website thiệp</em> ở trên để gửi bạn bè là họ bấm vào xem được ngay trên điện thoại!</p>
+                    </div>
+
+                </div>
+
+                <!-- TAB 3: CÀI ĐẶT GOOGLE SHEET -->
+                <div id="admin-tab-sheet" class="hidden space-y-3">
+                    <p class="text-xs text-slate-600 font-semibold leading-relaxed">
+                        Tự động lưu câu trả lời vào Google Sheet của bạn thông qua Google Apps Script Web App hoàn toàn miễn phí.
+                    </p>
+
+                    <div>
+                        <label class="text-[11px] font-black text-slate-700 block mb-1">URL Google Apps Script Web App:</label>
+                        <input type="text" id="admin-google-sheet-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full text-xs font-mono text-slate-800 bg-slate-50 border-2 border-slate-300 rounded-xl py-2 px-3 focus:outline-none focus:border-ueh-blue focus:bg-white transition">
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="saveGoogleSheetUrlFromAdmin()" class="flex-1 py-2 bg-ueh-blue hover:bg-blue-900 text-white font-black text-xs rounded-xl shadow transition">
+                            💾 Lưu Link Google Sheet
+                        </button>
+                        <button onclick="testGoogleSheetConnection()" class="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition">
+                            🧪 Gửi Thử 1 Dòng Test
+                        </button>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-left space-y-1.5 text-[11px] text-slate-700">
+                        <strong class="text-ueh-blue block font-black">📋 Cách tạo Google Sheet nhận RSVP trong 1 phút:</strong>
+                        <ol class="list-decimal list-inside space-y-1 font-medium">
+                            <li>Tạo 1 file Google Sheet mới trên Drive của bạn.</li>
+                            <li>Vào menu <strong>Tiện ích mở rộng (Extensions)</strong> &gt; <strong>Apps Script</strong>.</li>
+                            <li>Dán đoạn code trong file <code>google_apps_script.js</code> vào.</li>
+                            <li>Bấm nút <strong>Triển khai (Deploy)</strong> &gt; <strong>Tùy chọn triển khai mới (New deployment)</strong>.</li>
+                            <li>Chọn loại <strong>Ứng dụng web (Web app)</strong>, ở mục <em>Ai có quyền truy cập (Who has access)</em> chọn <strong>Bất kỳ ai (Anyone)</strong>.</li>
+                            <li>Copy link Web App (kết thúc bằng <code>/exec</code>) và dán vào ô phía trên!</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- TAB 4: CÀI ĐẶT NHẠC NỀN -->
+                <div id="admin-tab-music" class="hidden space-y-3 text-left">
+                    <div class="bg-gradient-to-r from-amber-500/10 to-pink-500/10 border border-amber-300/60 rounded-2xl p-3 space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎵</span>
+                            <div>
+                                <h4 class="text-xs font-black text-slate-800">Cài Đặt Nhạc Nền Thiệp Mời</h4>
+                                <p class="text-[10px] text-slate-500 font-bold">Âm nhạc tự động phát khi khách chạm vào thiệp</p>
+                            </div>
+                        </div>
+
+                        <!-- Trạng thái bài hát hiện tại & Nút nghe thử -->
+                        <div class="bg-white p-2.5 rounded-xl border border-slate-200 flex items-center justify-between shadow-sm">
+                            <div class="flex items-center gap-2 overflow-hidden">
+                                <div id="admin-music-status-icon" class="w-8 h-8 rounded-lg bg-pink-100 text-pink-600 flex items-center justify-center shrink-0">
+                                    <i data-lucide="disc" class="w-4 h-4 animate-spin"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <div class="text-[9px] font-bold text-slate-400 uppercase">Đang sử dụng:</div>
+                                    <div id="admin-current-song-name" class="text-xs font-black text-slate-800 truncate">Bài ca Tốt Nghiệp Rộn Ràng 🎓</div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="toggleMusicPlayback()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs py-1.5 px-3 rounded-lg flex items-center gap-1 border border-slate-300 cursor-pointer">
+                                <i data-lucide="play" class="w-3.5 h-3.5 text-pink-600"></i>
+                                <span id="admin-music-play-text">Phát/Dừng</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cách 1: Chọn bài hát có sẵn -->
+                    <div class="space-y-1.5">
+                        <div class="text-[11px] font-black text-slate-700 flex items-center gap-1">
+                            <span>✨</span>
+                            <span>Cách 1: Chọn giai điệu có sẵn (Miễn phí & Rất hay):</span>
+                        </div>
+                        <div class="grid grid-cols-1 gap-1.5">
+                            <button type="button" onclick="setMusicPreset('graduation')" class="w-full text-left p-2.5 rounded-xl border hover:border-pink-400 bg-white hover:bg-pink-50/50 transition flex items-center justify-between cursor-pointer group shadow-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-base">🎓</span>
+                                    <div>
+                                        <div class="text-xs font-black text-slate-800 group-hover:text-pink-600">1. Tốt Nghiệp Rực Rỡ (Upbeat & Vui Tươi)</div>
+                                        <div class="text-[10px] text-slate-400">Giai điệu rộn ràng, hào hứng ngày ra trường</div>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-pink-600">Chọn ↵</span>
+                            </button>
+
+                            <button type="button" onclick="setMusicPreset('acoustic')" class="w-full text-left p-2.5 rounded-xl border hover:border-amber-400 bg-white hover:bg-amber-50/50 transition flex items-center justify-between cursor-pointer group shadow-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-base">🌸</span>
+                                    <div>
+                                        <div class="text-xs font-black text-slate-800 group-hover:text-amber-600">2. Ký Ức Thanh Xuân (Piano & Acoustic ấm áp)</div>
+                                        <div class="text-[10px] text-slate-400">Nhẹ nhàng, sâu lắng, cảm xúc 4 năm đại học</div>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-amber-600">Chọn ↵</span>
+                            </button>
+
+                            <button type="button" onclick="setMusicPreset('lofi')" class="w-full text-left p-2.5 rounded-xl border hover:border-sky-400 bg-white hover:bg-sky-50/50 transition flex items-center justify-between cursor-pointer group shadow-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-base">☕</span>
+                                    <div>
+                                        <div class="text-xs font-black text-slate-800 group-hover:text-sky-600">3. Lo-Fi Chill Học Đường (Thư Giãn & Trẻ Trung)</div>
+                                        <div class="text-[10px] text-slate-400">Êm dịu, hiện đại, phong cách chill nhẹ nhàng</div>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-sky-600">Chọn ↵</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cách 2: Tải file MP3 từ máy của bạn -->
+                    <div class="bg-slate-50 border rounded-2xl p-3 space-y-2">
+                        <div class="text-[11px] font-black text-slate-700 flex items-center gap-1">
+                            <span>📁</span>
+                            <span>Cách 2: Tải file nhạc MP3 từ máy tính / điện thoại:</span>
+                        </div>
+                        <input type="file" id="music-file-input" accept="audio/mp3,audio/*" onchange="handleMusicFileUpload(event)" class="hidden">
+                        <label for="music-file-input" class="w-full py-2.5 px-3 bg-white border-2 border-dashed border-amber-400 hover:border-amber-500 rounded-xl text-center flex items-center justify-center gap-2 cursor-pointer transition hover:bg-amber-50/50 shadow-xs">
+                            <i data-lucide="upload-cloud" class="w-4 h-4 text-amber-600"></i>
+                            <span class="text-xs font-black text-slate-800">Bấm để chọn file nhạc (.mp3) từ máy</span>
+                        </label>
+                        <p class="text-[10px] text-slate-500 leading-tight">
+                            💡 <em>Mẹo đơn giản nhất:</em> Bạn chỉ cần chép file bài hát yêu thích vào thư mục <code>d:\thiep</code> và đổi tên thành <strong>nhac.mp3</strong> là thiệp tự nhận ngay!
+                        </p>
+                    </div>
+
+                    <!-- Cách 3: Dán link bài hát trực tuyến -->
+                    <div class="bg-slate-50 border rounded-2xl p-3 space-y-2">
+                        <div class="text-[11px] font-black text-slate-700 flex items-center gap-1">
+                            <span>🔗</span>
+                            <span>Cách 3: Dán đường link trực tiếp file MP3 trực tuyến:</span>
+                        </div>
+                        <div class="flex gap-1.5">
+                            <input type="text" id="music-url-input" placeholder="https://example.com/bai-hat.mp3" class="flex-1 text-xs bg-white border rounded-xl py-2 px-2.5 text-slate-800 focus:outline-none focus:border-ueh-blue">
+                            <button type="button" onclick="applyCustomMusicUrl()" class="py-2 px-3 bg-ueh-blue hover:bg-blue-900 text-white font-bold text-xs rounded-xl transition cursor-pointer">
+                                Lưu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Main Controller Script -->
+    <script src="script.js"></script>
+</body>
+</html>
