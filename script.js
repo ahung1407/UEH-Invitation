@@ -418,7 +418,8 @@ function triggerRSVPAccept() {
         titleEl.innerText = 'HẸN GẶP BẠN NHA! SIÊU VUI LUÔN! 🎉';
     }
     if (descEl) {
-        descEl.innerHTML = 'Cảm ơn bạn yêu dấu! Tớ đã ghi nhớ bạn trong danh sách thượng khách lúc <strong class="text-ueh-blue">15:00 ngày 26/09/2026</strong> tại <strong class="text-ueh-blue">UEH Cơ sở A</strong> rồi nha. Chuẩn bị tinh thần chụp 1000 tấm hình kỷ niệm nhé! 🥰';
+        const timeStr = (document.querySelector('[data-key="s3-time"]') || {}).innerText || '9:30 - Sáng';
+        descEl.innerHTML = `Cảm ơn bạn yêu dấu! Tớ đã ghi nhớ bạn trong danh sách thượng khách lúc <strong class="text-ueh-blue">${timeStr} ngày 26/09/2026</strong> tại <strong class="text-ueh-blue">UEH Cơ sở A</strong> rồi nha. Chuẩn bị tinh thần chụp 1000 tấm hình kỷ niệm nhé! 🥰`;
     }
     if (btnEl) {
         btnEl.className = 'w-full bg-ueh-blue text-white font-black py-3 rounded-xl shadow-lg hover:bg-blue-900 transition text-xs border border-yellow-300 cursor-pointer';
@@ -1053,9 +1054,124 @@ function generateBubbles() {
 }
 
 // ==========================================
+// 7B. 🌐 TỰ ĐỘNG ĐÓNG GÓI & ĐỒNG BỘ CHỈNH SỬA CHO KHÁCH (URL AUTO-SYNC)
+// ==========================================
+function packEditsForUrl() {
+    try {
+        const texts = JSON.parse(localStorage.getItem(EDIT_STORAGE_KEY) || '{}');
+        const dels = JSON.parse(localStorage.getItem(DELETED_OBJECTS_KEY) || '[]');
+        const boxes = JSON.parse(localStorage.getItem(BOX_POSITIONS_KEY) || '{}');
+        const stickers = JSON.parse(localStorage.getItem('thiep_year_stickers_v3') || '{}');
+
+        if (Object.keys(texts).length === 0 && dels.length === 0 && Object.keys(boxes).length === 0 && Object.keys(stickers).length === 0) {
+            return '';
+        }
+
+        const payload = { t: texts, d: dels, b: boxes, s: stickers };
+        const jsonStr = JSON.stringify(payload);
+        return encodeURIComponent(btoa(unescape(encodeURIComponent(jsonStr))));
+    } catch(e) {
+        return '';
+    }
+}
+
+function unpackEditsFromUrl() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const raw = urlParams.get('c') || urlParams.get('d') || urlParams.get('edits');
+        if (!raw) return;
+        const jsonStr = decodeURIComponent(escape(atob(decodeURIComponent(raw))));
+        const data = JSON.parse(jsonStr);
+        if (data.t && typeof data.t === 'object') {
+            const current = JSON.parse(localStorage.getItem(EDIT_STORAGE_KEY) || '{}');
+            localStorage.setItem(EDIT_STORAGE_KEY, JSON.stringify(Object.assign({}, current, data.t)));
+        }
+        if (Array.isArray(data.d)) {
+            const current = JSON.parse(localStorage.getItem(DELETED_OBJECTS_KEY) || '[]');
+            const merged = Array.from(new Set([...current, ...data.d]));
+            localStorage.setItem(DELETED_OBJECTS_KEY, JSON.stringify(merged));
+        }
+        if (data.b && typeof data.b === 'object') {
+            const current = JSON.parse(localStorage.getItem(BOX_POSITIONS_KEY) || '{}');
+            localStorage.setItem(BOX_POSITIONS_KEY, JSON.stringify(Object.assign({}, current, data.b)));
+        }
+        if (data.s && typeof data.s === 'object') {
+            const current = JSON.parse(localStorage.getItem('thiep_year_stickers_v3') || '{}');
+            localStorage.setItem('thiep_year_stickers_v3', JSON.stringify(Object.assign({}, current, data.s)));
+        }
+    } catch(e) {
+        console.warn('Không thể nạp cấu hình từ link:', e);
+    }
+}
+
+// Xuất file index.html với toàn bộ chỉnh sửa được nhúng cứng vĩnh viễn
+function exportUpdatedHtml() {
+    const cloneDoc = document.documentElement.cloneNode(true);
+    cloneDoc.querySelectorAll('.edit-delete-btn').forEach(btn => btn.remove());
+    const card = cloneDoc.querySelector('#card-container');
+    if (card) card.classList.remove('edit-mode');
+    cloneDoc.querySelectorAll('.drag-active, .dragging, .box-dragging').forEach(el => {
+        el.classList.remove('drag-active', 'dragging', 'box-dragging');
+    });
+
+    const dels = JSON.parse(localStorage.getItem(DELETED_OBJECTS_KEY) || '[]');
+    dels.forEach(key => {
+        const el = cloneDoc.querySelector(`[data-key="${key}"]`);
+        if (el) {
+            const parentBox = el.closest('.draggable-box') || el;
+            parentBox.classList.add('hidden', 'object-deleted');
+        }
+    });
+
+    const texts = JSON.parse(localStorage.getItem(EDIT_STORAGE_KEY) || '{}');
+    Object.keys(texts).forEach(key => {
+        const el = cloneDoc.querySelector(`[data-key="${key}"]`);
+        if (el) el.innerText = texts[key];
+    });
+
+    const boxes = JSON.parse(localStorage.getItem(BOX_POSITIONS_KEY) || '{}');
+    Object.keys(boxes).forEach(id => {
+        const el = cloneDoc.querySelector(`#${id}`);
+        if (el && boxes[id]) {
+            el.style.transform = `translate(${boxes[id].x}px, ${boxes[id].y}px)`;
+        }
+    });
+
+    const stickers = JSON.parse(localStorage.getItem('thiep_year_stickers_v3') || '{}');
+    Object.keys(stickers).forEach(id => {
+        const el = cloneDoc.querySelector(`#${id}`);
+        if (el && stickers[id]) {
+            if (stickers[id].text) el.innerText = stickers[id].text;
+            if (stickers[id].left) el.style.left = stickers[id].left;
+            if (stickers[id].top) el.style.top = stickers[id].top;
+            if (stickers[id].right) el.style.right = stickers[id].right;
+            if (stickers[id].bottom) el.style.bottom = stickers[id].bottom;
+        }
+    });
+
+    const fullHtml = '<!DOCTYPE html>\n' + cloneDoc.outerHTML;
+    const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'index.html';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+        link.remove();
+        URL.revokeObjectURL(url);
+    }, 1500);
+
+    alert('🎉 Đã tải file "index.html" mới với toàn bộ các chỉnh sửa của bạn được lưu vĩnh viễn!\n\nBạn có thể thay thế file index.html cũ trong thư mục rồi đẩy lên Netlify / GitHub nếu muốn.');
+}
+
+// ==========================================
 // 8. INITIALIZATION
 // ==========================================
 function initCard() {
+    // 0. Tự động giải nén cấu hình chỉnh sửa từ URL nếu được gửi qua link
+    unpackEditsFromUrl();
+
     if (window.lucide) {
         lucide.createIcons();
     }
@@ -1700,7 +1816,8 @@ function showRSVPModalResult(guestName, isAccept) {
             title.className = 'font-black text-xl text-ueh-blue';
         }
         if (desc) {
-            desc.innerHTML = `Cảm ơn <strong class="text-ueh-blue text-sm">${guestName}</strong>! Tớ đã ghi tên bạn vào danh sách rồi nè. Nhớ lịch hẹn <strong class="text-ueh-blue">15:00 ngày 26/09/2026</strong> tại <strong class="text-ueh-blue">UEH Cơ sở A</strong> nha! 🥰✨`;
+            const timeStr = (document.querySelector('[data-key="s3-time"]') || {}).innerText || '9:30 - Sáng';
+            desc.innerHTML = `Cảm ơn <strong class="text-ueh-blue text-sm">${guestName}</strong>! Tớ đã ghi tên bạn vào danh sách rồi nè. Nhớ lịch hẹn <strong class="text-ueh-blue">${timeStr} ngày 26/09/2026</strong> tại <strong class="text-ueh-blue">UEH Cơ sở A</strong> nha! 🥰✨`;
         }
         if (btn) btn.innerText = 'Hẹn gặp bạn tại buổi lễ! 🎓';
 
@@ -2093,6 +2210,12 @@ function generateCustomInviteLink() {
             urlObj.searchParams.set('music', currentMusic);
         }
 
+        // Tự động gắn toàn bộ chỉnh sửa, icon đã xóa, sticker kéo thả của chủ tiệc vào link
+        const editsPack = packEditsForUrl();
+        if (editsPack) {
+            urlObj.searchParams.set('c', editsPack);
+        }
+
         finalUrl = urlObj.toString();
     } catch(err) {
         finalUrl = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}to=${encodeURIComponent(name)}`;
@@ -2102,6 +2225,8 @@ function generateCustomInviteLink() {
         if (currentSheetUrl) finalUrl += `&sheet=${encodeURIComponent(currentSheetUrl)}`;
         const currentMusic = localStorage.getItem(MUSIC_STORAGE_KEY);
         if (currentMusic && currentMusic.startsWith('http')) finalUrl += `&music=${encodeURIComponent(currentMusic)}`;
+        const editsPack = packEditsForUrl();
+        if (editsPack) finalUrl += `&c=${editsPack}`;
     }
 
     lastGeneratedInviteUrl = finalUrl;
