@@ -1375,11 +1375,20 @@
 
                 </div>
 
-                <!-- TAB 3: CÀI ĐẶT GOOGLE SHEET -->
+                <!-- TAB 3: CÀI ĐẶT GOOGLE SHEET & ĐỒNG BỘ REAL-TIME -->
                 <div id="admin-tab-sheet" class="hidden space-y-3">
-                    <p class="text-xs text-slate-600 font-semibold leading-relaxed">
-                        Tự động lưu câu trả lời vào Google Sheet của bạn thông qua Google Apps Script Web App hoàn toàn miễn phí.
-                    </p>
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-left space-y-2 text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">☁️</span>
+                            <div>
+                                <h4 class="font-black text-emerald-800 text-xs uppercase">Bộ não đám mây Google Sheet (Real-Time)</h4>
+                                <p class="text-[10px] text-slate-600 font-medium">Tự động đồng bộ 100% nội dung sửa, icon xóa, vị trí sticker từ web sang điện thoại khách mời.</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="syncConfigToCloud(false)" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <span>☁️ Đồng bộ nội dung sửa lên Google Sheet ngay</span>
+                        </button>
+                    </div>
 
                     <div>
                         <label class="text-[11px] font-black text-slate-700 block mb-1">URL Google Apps Script Web App:</label>
@@ -1396,14 +1405,12 @@
                     </div>
 
                     <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-left space-y-1.5 text-[11px] text-slate-700">
-                        <strong class="text-ueh-blue block font-black">📋 Cách tạo Google Sheet nhận RSVP trong 1 phút:</strong>
+                        <strong class="text-ueh-blue block font-black">📋 Cách cập nhật Google Apps Script (Chỉ làm 1 lần duy nhất):</strong>
                         <ol class="list-decimal list-inside space-y-1 font-medium">
-                            <li>Tạo 1 file Google Sheet mới trên Drive của bạn.</li>
-                            <li>Vào menu <strong>Tiện ích mở rộng (Extensions)</strong> &gt; <strong>Apps Script</strong>.</li>
-                            <li>Dán đoạn code trong file <code>google_apps_script.js</code> vào.</li>
-                            <li>Bấm nút <strong>Triển khai (Deploy)</strong> &gt; <strong>Tùy chọn triển khai mới (New deployment)</strong>.</li>
-                            <li>Chọn loại <strong>Ứng dụng web (Web app)</strong>, ở mục <em>Ai có quyền truy cập (Who has access)</em> chọn <strong>Bất kỳ ai (Anyone)</strong>.</li>
-                            <li>Copy link Web App (kết thúc bằng <code>/exec</code>) và dán vào ô phía trên!</li>
+                            <li>Mở Google Sheet của bạn &gt; vào <strong>Tiện ích mở rộng (Extensions)</strong> &gt; <strong>Apps Script</strong>.</li>
+                            <li>Xóa hết code cũ, copy và dán toàn bộ code trong file <code>google_apps_script.js</code> vào rồi bấm Lưu (Ctrl+S).</li>
+                            <li>Bấm <strong>Triển khai (Deploy)</strong> &gt; <strong>Quản lý bản triển khai (Manage deployments)</strong>.</li>
+                            <li>Bấm biểu tượng cây bút chỉnh sửa &gt; ở mục <em>Phiên bản (Version)</em> chọn <strong>Phiên bản mới (New version)</strong> &gt; bấm <strong>Triển khai (Deploy)</strong> là xong!</li>
                         </ol>
                     </div>
                 </div>

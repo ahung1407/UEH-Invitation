@@ -639,6 +639,9 @@ function saveStickersToStorage() {
         }
     });
     localStorage.setItem('thiep_year_stickers_v3', JSON.stringify(data));
+    if (typeof debouncedSyncToCloud === 'function') {
+        debouncedSyncToCloud();
+    }
 }
 
 function loadSavedStickers() {
@@ -792,6 +795,9 @@ function saveAllBoxPositions() {
         }
     });
     localStorage.setItem(BOX_POSITIONS_KEY, JSON.stringify(data));
+    if (typeof debouncedSyncToCloud === 'function') {
+        debouncedSyncToCloud();
+    }
 }
 
 function loadSavedBoxPositions() {
@@ -853,7 +859,10 @@ function toggleEditMode() {
         saveAllEdits();
         saveStickersToStorage();
         saveAllBoxPositions();
-        showEditToast('💾 Đã lưu toàn bộ nội dung & vị trí!');
+        showEditToast('☁️ Đã lưu & đồng bộ lên Google Sheet!');
+        if (typeof syncConfigToCloud === 'function') {
+            syncConfigToCloud(false);
+        }
     }
     if (window.lucide) lucide.createIcons();
 }
@@ -872,6 +881,9 @@ function saveDeletedObject(key) {
     if (!list.includes(key)) {
         list.push(key);
         localStorage.setItem(DELETED_OBJECTS_KEY, JSON.stringify(list));
+    }
+    if (typeof debouncedSyncToCloud === 'function') {
+        debouncedSyncToCloud();
     }
 }
 
@@ -983,6 +995,9 @@ function saveAllEdits() {
     });
 
     localStorage.setItem(EDIT_STORAGE_KEY, JSON.stringify(data));
+    if (typeof debouncedSyncToCloud === 'function') {
+        debouncedSyncToCloud();
+    }
 }
 
 function loadSavedEdits() {
@@ -1104,6 +1119,115 @@ function unpackEditsFromUrl() {
     }
 }
 
+// ==============================================================================
+// 7C. ☁️ ĐỒNG BỘ REAL-TIME ĐÁM MÂY QUA GOOGLE SHEET (KHÔNG CẦN CHẠM VÀO CODE)
+// ==============================================================================
+let cloudSyncTimer = null;
+
+function debouncedSyncToCloud() {
+    clearTimeout(cloudSyncTimer);
+    cloudSyncTimer = setTimeout(() => {
+        syncConfigToCloud(true);
+    }, 1000);
+}
+
+async function syncConfigToCloud(silent = false) {
+    const sheetUrl = getGoogleSheetUrl();
+    if (!sheetUrl) return;
+
+    const texts = JSON.parse(localStorage.getItem(EDIT_STORAGE_KEY) || '{}');
+    const dels = JSON.parse(localStorage.getItem(DELETED_OBJECTS_KEY) || '[]');
+    const boxes = JSON.parse(localStorage.getItem(BOX_POSITIONS_KEY) || '{}');
+    const stickers = JSON.parse(localStorage.getItem('thiep_year_stickers_v3') || '{}');
+
+    const payload = {
+        action: 'save_config',
+        config: { t: texts, d: dels, b: boxes, s: stickers },
+        timestamp: new Date().toISOString()
+    };
+
+    try {
+        await fetch(sheetUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(payload)
+        });
+        if (!silent && typeof showEditToast === 'function') {
+            showEditToast('☁️ Đã đồng bộ 100% lên Google Sheet!');
+        }
+    } catch (err) {
+        console.warn('Lỗi đồng bộ đám mây:', err);
+    }
+}
+
+async function loadConfigFromCloud() {
+    const sheetUrl = getGoogleSheetUrl();
+    if (!sheetUrl) return;
+
+    function applyConfig(data) {
+        if (!data || typeof data !== 'object') return;
+        let changed = false;
+        if (data.t && Object.keys(data.t).length > 0) {
+            localStorage.setItem(EDIT_STORAGE_KEY, JSON.stringify(data.t));
+            changed = true;
+        }
+        if (Array.isArray(data.d) && data.d.length > 0) {
+            localStorage.setItem(DELETED_OBJECTS_KEY, JSON.stringify(data.d));
+            changed = true;
+        }
+        if (data.b && Object.keys(data.b).length > 0) {
+            localStorage.setItem(BOX_POSITIONS_KEY, JSON.stringify(data.b));
+            changed = true;
+        }
+        if (data.s && Object.keys(data.s).length > 0) {
+            localStorage.setItem('thiep_year_stickers_v3', JSON.stringify(data.s));
+            changed = true;
+        }
+        if (changed) {
+            loadSavedEdits();
+            loadSavedStickers();
+            loadSavedBoxPositions();
+            if (window.lucide) lucide.createIcons();
+        }
+    }
+
+    // 1. Thử tải nhanh qua fetch thông thường
+    try {
+        const sep = sheetUrl.includes('?') ? '&' : '?';
+        const resp = await fetch(`${sheetUrl}${sep}action=get_config&t=${Date.now()}`);
+        if (resp.ok) {
+            const result = await resp.json();
+            if (result && result.status === 'success' && result.data) {
+                applyConfig(result.data);
+                return;
+            }
+        }
+    } catch(e) {
+        console.warn('Fetch config đám mây thất bại, đang chuyển sang JSONP fallback:', e);
+    }
+
+    // 2. JSONP Fallback (Đảm bảo 100% chạy xuyên qua mọi trình duyệt di động Zalo / Messenger / Safari)
+    try {
+        const callbackName = 'onCloudConfigLoaded_' + Math.floor(Math.random() * 1000000);
+        window[callbackName] = function(result) {
+            delete window[callbackName];
+            const scriptTag = document.getElementById(callbackName);
+            if (scriptTag) scriptTag.remove();
+            if (result && result.status === 'success' && result.data) {
+                applyConfig(result.data);
+            }
+        };
+        const sep = sheetUrl.includes('?') ? '&' : '?';
+        const script = document.createElement('script');
+        script.id = callbackName;
+        script.src = `${sheetUrl}${sep}action=get_config&callback=${callbackName}&t=${Date.now()}`;
+        document.head.appendChild(script);
+    } catch(err) {
+        console.warn('Lỗi JSONP tải cấu hình đám mây:', err);
+    }
+}
+
 // Xuất file index.html với toàn bộ chỉnh sửa được nhúng cứng vĩnh viễn
 function exportUpdatedHtml() {
     const cloneDoc = document.documentElement.cloneNode(true);
@@ -1171,6 +1295,9 @@ function exportUpdatedHtml() {
 function initCard() {
     // 0. Tự động giải nén cấu hình chỉnh sửa từ URL nếu được gửi qua link
     unpackEditsFromUrl();
+
+    // 0B. Tự động đồng bộ cấu hình mới nhất từ đám mây Google Sheet
+    loadConfigFromCloud();
 
     if (window.lucide) {
         lucide.createIcons();
