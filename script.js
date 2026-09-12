@@ -143,48 +143,236 @@ function createTapParticle(e) {
 }
 
 // ==========================================
-// 3. PHOTO UPLOADS
+// 3. SMART ADAPTIVE PHOTO FRAMES (TỰ CĂN CHỈNH KHUNG ẢNH ĐẸP NHẤT)
 // ==========================================
+
+const PHOTO_STORAGE_KEYS = {
+    s1: { src: 'thiep_photo_s1_src', fit: 'thiep_photo_s1_fit', ratio: 'thiep_photo_s1_ratio' },
+    s4: { src: 'thiep_photo_s4_src', fit: 'thiep_photo_s4_fit', ratio: 'thiep_photo_s4_ratio' }
+};
+
+// Hàm tính toán và tự động căn chỉnh khung ảnh ôm khít & lấp kín 100% bức ảnh thực tế
+function applySmartPhotoLayout(slot, imageSrc, customFitMode = null, shouldSave = true) {
+    const isS1 = slot === 's1';
+    const boxContainer = document.getElementById(isS1 ? 'box-s1-photo' : 'box-s4-photo');
+    const frameEl = document.getElementById(isS1 ? 'photo-frame-s1' : 'photo-frame-s4');
+    const imgEl = document.getElementById(isS1 ? 'uploaded-img' : 'uploaded-img-2');
+    const ambientEl = document.getElementById(isS1 ? 'uploaded-img-ambient' : 'uploaded-img-2-ambient');
+    const defaultGraphic = document.getElementById(isS1 ? 'default-photo-graphic' : 'default-photo-graphic-2');
+    const toolsEl = document.getElementById(isS1 ? 'photo-tools-s1' : 'photo-tools-s4');
+    const btnText = document.getElementById(isS1 ? 'upload-btn-text' : 'upload-btn-text-2');
+
+    if (!frameEl || !imgEl) return;
+
+    // Tải ảnh vào đối tượng Image ngầm để đo kích thước tự nhiên chính xác 100%
+    const tempImg = new Image();
+    tempImg.onload = function() {
+        const naturalW = tempImg.naturalWidth || 400;
+        const naturalH = tempImg.naturalHeight || 400;
+        const ratio = naturalW / naturalH; // Chiều rộng / Chiều cao
+
+        // Đo chiều rộng tối đa có thể của khung (theo thẻ card cha)
+        const parentWidth = (boxContainer ? boxContainer.clientWidth : 0) || frameEl.parentElement.clientWidth || 340;
+        const maxW = Math.min(parentWidth - 6, 360);
+
+        // Chiều cao an toàn tối đa trên màn hình để không che các nút
+        const maxH = isS1 
+            ? Math.min(430, Math.floor(window.innerHeight * 0.50)) 
+            : Math.min(290, Math.floor(window.innerHeight * 0.38));
+
+        let targetW, targetH;
+
+        if (ratio < 1) {
+            // ẢNH ĐỨNG / DỌC (Ảnh chân dung tốt nghiệp, poster cử nhân):
+            // Cho chiều cao đạt tối đa, và chiều rộng co lại theo đúng tỷ lệ của ảnh để viền bọc khít ảnh!
+            targetH = maxH;
+            targetW = Math.round(targetH * ratio);
+
+            // Nếu chiều rộng vẫn vượt quá chiều rộng cho phép thì giới hạn lại
+            if (targetW > maxW) {
+                targetW = maxW;
+                targetH = Math.round(targetW / ratio);
+            }
+        } else {
+            // ẢNH NẰM NGANG HOẶC VUÔNG:
+            targetW = maxW;
+            targetH = Math.round(targetW / ratio);
+
+            if (targetH > maxH) {
+                targetH = maxH;
+                targetW = Math.round(targetH * ratio);
+            }
+            if (targetH < 180) {
+                targetH = 180;
+            }
+        }
+
+        // Đặt kích thước khung bọc khít chính xác 100% theo tỷ lệ ảnh
+        frameEl.style.width = `${targetW}px`;
+        frameEl.style.height = `${targetH}px`;
+        frameEl.style.maxWidth = '100%';
+        frameEl.style.margin = '0 auto';
+        frameEl.style.aspectRatio = `${naturalW} / ${naturalH}`;
+        frameEl.classList.add('has-photo');
+
+        // Gán ảnh và LẮP KÍN 100% TOÀN BỘ KHUNG
+        imgEl.src = imageSrc;
+        imgEl.style.width = '100%';
+        imgEl.style.height = '100%';
+        imgEl.style.objectFit = 'cover';
+        imgEl.classList.remove('hidden');
+
+        // Ẩn đồ họa mặc định
+        if (defaultGraphic) {
+            defaultGraphic.classList.add('hidden');
+        }
+
+        // Ẩn lớp hào quang thừa vì ảnh đã lấp kín 100% khung
+        if (ambientEl) {
+            ambientEl.classList.add('hidden');
+        }
+
+        // Hiện nút gỡ ảnh
+        if (toolsEl) {
+            toolsEl.classList.remove('hidden');
+        }
+
+        // Cập nhật nút bấm tải ảnh thành nút nổi nhỏ gọn
+        if (btnText) {
+            btnText.innerText = 'Đổi ảnh khác';
+        }
+
+        // Lưu vào localStorage
+        if (shouldSave) {
+            try {
+                localStorage.setItem(PHOTO_STORAGE_KEYS[slot].src, imageSrc);
+                localStorage.setItem(PHOTO_STORAGE_KEYS[slot].ratio, ratio.toFixed(3));
+            } catch (err) {
+                console.warn('Không thể lưu ảnh vào localStorage:', err);
+            }
+        }
+
+        if (window.lucide) lucide.createIcons();
+    };
+
+    tempImg.src = imageSrc;
+}
+
+// Xử lý khi người dùng chọn tải ảnh lên Slide 1 (Ảnh tốt nghiệp)
 function handlePhotoUpload(event) {
     const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const defaultGraphic = document.getElementById('default-photo-graphic');
-            const imgElement = document.getElementById('uploaded-img');
-            const btnText = document.getElementById('upload-btn-text');
+    if (!file) return;
 
-            if (imgElement && defaultGraphic) {
-                imgElement.src = e.target.result;
-                imgElement.classList.remove('hidden');
-                defaultGraphic.classList.add('hidden');
-            }
-            if (btnText) btnText.innerText = '📸 Đổi ảnh khác';
-            if (typeof confetti === 'function') confetti({ particleCount: 60, spread: 70 });
-        };
-        reader.readAsDataURL(file);
+    processAndOptimizeImage(file, (optimizedDataUrl) => {
+        applySmartPhotoLayout('s1', optimizedDataUrl, 'cover', true);
+        if (typeof confetti === 'function') confetti({ particleCount: 70, spread: 80 });
+        if (typeof showEditToast === 'function') {
+            showEditToast('✨ Đã căn chỉnh khung ôm khít và lấp đầy bức ảnh của bạn!');
+        }
+    });
+}
+
+// Xử lý khi người dùng chọn tải ảnh lên Slide 4 (Ảnh kỷ niệm)
+function handlePhotoUpload2(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    processAndOptimizeImage(file, (optimizedDataUrl) => {
+        applySmartPhotoLayout('s4', optimizedDataUrl, 'cover', true);
+        if (typeof confetti === 'function') confetti({ particleCount: 70, spread: 80 });
+        if (typeof showEditToast === 'function') {
+            showEditToast('✨ Đã căn chỉnh khung ôm khít và lấp đầy bức ảnh của bạn!');
+        }
+    });
+}
+
+// Đặt lại ảnh mặc định (Xóa ảnh tùy chỉnh)
+function resetUserPhoto(slot) {
+    const isS1 = slot === 's1';
+    const frameEl = document.getElementById(isS1 ? 'photo-frame-s1' : 'photo-frame-s4');
+    const imgEl = document.getElementById(isS1 ? 'uploaded-img' : 'uploaded-img-2');
+    const ambientEl = document.getElementById(isS1 ? 'uploaded-img-ambient' : 'uploaded-img-2-ambient');
+    const defaultGraphic = document.getElementById(isS1 ? 'default-photo-graphic' : 'default-photo-graphic-2');
+    const toolsEl = document.getElementById(isS1 ? 'photo-tools-s1' : 'photo-tools-s4');
+    const btnText = document.getElementById(isS1 ? 'upload-btn-text' : 'upload-btn-text-2');
+
+    if (imgEl) {
+        imgEl.src = '';
+        imgEl.classList.add('hidden');
+    }
+    if (ambientEl) {
+        ambientEl.classList.add('hidden');
+    }
+    if (defaultGraphic) {
+        defaultGraphic.classList.remove('hidden');
+    }
+    if (toolsEl) {
+        toolsEl.classList.add('hidden');
+    }
+    if (frameEl) {
+        frameEl.style.width = '';
+        frameEl.style.height = '';
+        frameEl.style.maxWidth = '';
+        frameEl.style.margin = '';
+        frameEl.style.aspectRatio = '';
+        frameEl.classList.remove('has-photo');
+    }
+    if (btnText) {
+        btnText.innerText = isS1 ? '📸 Ghép ảnh tốt nghiệp của bạn' : '📸 Ghép ảnh kỷ niệm';
+    }
+
+    localStorage.removeItem(PHOTO_STORAGE_KEYS[slot].src);
+    localStorage.removeItem(PHOTO_STORAGE_KEYS[slot].ratio);
+    localStorage.removeItem(PHOTO_STORAGE_KEYS[slot].fit);
+
+    if (typeof showEditToast === 'function') {
+        showEditToast('🔄 Đã khôi phục hình ảnh mặc định!');
     }
 }
 
-function handlePhotoUpload2(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const defaultGraphic = document.getElementById('default-photo-graphic-2');
-            const imgElement = document.getElementById('uploaded-img-2');
-            const btnText = document.getElementById('upload-btn-text-2');
+// Hàm tối ưu hóa và nén nhẹ ảnh bằng Canvas để web mượt mà và lưu được trong trình duyệt
+function processAndOptimizeImage(file, callback) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const maxDimension = 1280;
+            let w = img.naturalWidth || img.width;
+            let h = img.naturalHeight || img.height;
 
-            if (imgElement && defaultGraphic) {
-                imgElement.src = e.target.result;
-                imgElement.classList.remove('hidden');
-                defaultGraphic.classList.add('hidden');
+            if (w > maxDimension || h > maxDimension) {
+                if (w > h) {
+                    h = Math.round((h * maxDimension) / w);
+                    w = maxDimension;
+                } else {
+                    w = Math.round((w * maxDimension) / h);
+                    h = maxDimension;
+                }
             }
-            if (btnText) btnText.innerText = '📸 Đổi ảnh khác';
-            if (typeof confetti === 'function') confetti({ particleCount: 60, spread: 70 });
+
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+
+            // Xuất file ảnh JPEG chất lượng cao 88%
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+            callback(dataUrl);
         };
-        reader.readAsDataURL(file);
-    }
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// Tự động khôi phục ảnh đã lưu khi mở lại trang web
+function restoreSavedUserPhotos() {
+    ['s1', 's4'].forEach(slot => {
+        const savedSrc = localStorage.getItem(PHOTO_STORAGE_KEYS[slot].src);
+        if (savedSrc) {
+            applySmartPhotoLayout(slot, savedSrc, 'cover', false);
+        }
+    });
 }
 
 // ==========================================
@@ -1351,16 +1539,10 @@ function handleSecretAdminTap() {
 
 // Thiết lập ảnh kỷ niệm riêng ở Slide 4
 function setFriendMemoryPhoto(picUrl, friendName) {
-    const img2 = document.getElementById('uploaded-img-2');
-    const defaultGraphic2 = document.getElementById('default-photo-graphic-2');
+    applySmartPhotoLayout('s4', picUrl, 'contain', false);
     const btnText2 = document.getElementById('upload-btn-text-2');
     const s4Title = document.querySelector('[data-key="s4-title"]');
 
-    if (img2 && defaultGraphic2) {
-        img2.src = picUrl;
-        img2.classList.remove('hidden');
-        defaultGraphic2.classList.add('hidden');
-    }
     if (btnText2 && friendName) {
         btnText2.innerText = `📸 Ảnh kỷ niệm cùng ${friendName} ❤️`;
     }
@@ -2286,5 +2468,20 @@ function applyCustomMusicUrl() {
     alert('🎉 Đã lưu đường link bài hát thành công!');
 }
 
+// ==========================================
+// TỰ ĐỘNG KHỞI TẠO KHUNG ẢNH KHI MỞ TRANG
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Tự động khôi phục ảnh và tính toán kích thước khung ảnh hoàn mỹ
+    restoreSavedUserPhotos();
 
-
+    // 2. Tự động căn chỉnh lại khi xoay màn hình hoặc resize
+    window.addEventListener('resize', () => {
+        ['s1', 's4'].forEach(slot => {
+            const savedSrc = localStorage.getItem(PHOTO_STORAGE_KEYS[slot].src);
+            if (savedSrc) {
+                applySmartPhotoLayout(slot, savedSrc, 'cover', false);
+            }
+        });
+    });
+});
