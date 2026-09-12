@@ -1518,8 +1518,8 @@ const MY_RSVP_KEY = 'thiep_my_rsvp_choice';
 let pendingRSVPOption = null;
 
 // CẤU HÌNH GOOGLE SHEET WEB APP URL TOÀN HỆ THỐNG
-// Nếu bạn có link Google Apps Script, dán vào đây để mọi thiết bị/bạn bè đều tự động gửi được:
-const DEFAULT_GOOGLE_SHEET_URL = '';
+// Đã nhúng sẵn URL Google Apps Script để mọi thiết bị/bạn bè đều tự động gửi được mà không cần kèm link dài:
+const DEFAULT_GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxDkSKFqPqVAZFAqvUlit77ZEf5cyL7_iFBCj07Hq33lYVADuLyMArbpqwhR_c8_yUw/exec';
 
 // Lấy link Google Sheet Web App (ưu tiên cấu hình mã nguồn > link lưu máy > tham số trên link)
 function getGoogleSheetUrl() {
@@ -2198,9 +2198,9 @@ function generateCustomInviteLink() {
             } catch(e) {}
         }
 
-        // Gắn link Google Sheet để bạn bè bấm RSVP là gửi thẳng lên trang tính của chủ tiệc
+        // Chỉ gắn link Google Sheet nếu khác với mặc định đã nhúng trong mã nguồn
         const currentSheetUrl = getGoogleSheetUrl();
-        if (currentSheetUrl) {
+        if (currentSheetUrl && currentSheetUrl !== DEFAULT_GOOGLE_SHEET_URL) {
             urlObj.searchParams.set('sheet', currentSheetUrl);
         }
 
@@ -2210,23 +2210,17 @@ function generateCustomInviteLink() {
             urlObj.searchParams.set('music', currentMusic);
         }
 
-        // Tự động gắn toàn bộ chỉnh sửa, icon đã xóa, sticker kéo thả của chủ tiệc vào link
-        const editsPack = packEditsForUrl();
-        if (editsPack) {
-            urlObj.searchParams.set('c', editsPack);
-        }
-
         finalUrl = urlObj.toString();
     } catch(err) {
         finalUrl = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}to=${encodeURIComponent(name)}`;
         if (customMsg) finalUrl += `&msg=${encodeURIComponent(customMsg)}`;
         if (directPhotoUrl) finalUrl += `&pic=${encodeURIComponent(directPhotoUrl)}`;
         const currentSheetUrl = getGoogleSheetUrl();
-        if (currentSheetUrl) finalUrl += `&sheet=${encodeURIComponent(currentSheetUrl)}`;
+        if (currentSheetUrl && currentSheetUrl !== DEFAULT_GOOGLE_SHEET_URL) {
+            finalUrl += `&sheet=${encodeURIComponent(currentSheetUrl)}`;
+        }
         const currentMusic = localStorage.getItem(MUSIC_STORAGE_KEY);
         if (currentMusic && currentMusic.startsWith('http')) finalUrl += `&music=${encodeURIComponent(currentMusic)}`;
-        const editsPack = packEditsForUrl();
-        if (editsPack) finalUrl += `&c=${editsPack}`;
     }
 
     lastGeneratedInviteUrl = finalUrl;
