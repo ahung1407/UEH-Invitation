@@ -798,7 +798,7 @@
                     🎀 CỬ NHÂN XỊN
                 </div>
 
-                <div id="photo-frame-s1" class="smart-photo-frame bg-gradient-to-tr from-sky-200 via-yellow-100 to-pink-200 p-2.5 border-4 border-dashed border-ueh-blue/50 shadow-2xl group">
+                <div id="photo-frame-s1" class="smart-photo-frame has-photo bg-gradient-to-tr from-sky-200 via-yellow-100 to-pink-200 p-0 border-4 border-white shadow-2xl group" style="width: 280px; height: 420px; max-width: 100%; margin: 0 auto; aspect-ratio: 2/3;">
                     
                     <input type="file" id="user-photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
                     
@@ -806,15 +806,15 @@
                     <div id="uploaded-img-ambient" class="ambient-blur-bg hidden"></div>
 
                     <!-- Default Cartoon Photo Graphic (Tân Cử Nhân Cartoon) -->
-                    <div id="default-photo-graphic" class="flex flex-col items-center justify-center w-full h-full overflow-hidden rounded-2xl relative z-10">
+                    <div id="default-photo-graphic" class="hidden flex-col items-center justify-center w-full h-full overflow-hidden rounded-2xl relative z-10">
                         <img src="nam4_cartoon.jpg" alt="Tân Cử Nhân Hoạt Hình" class="w-full h-full object-cover object-top hover:scale-105 transition duration-500">
                     </div>
 
-                    <!-- Ảnh tốt nghiệp do người dùng tải lên (Tự căn chỉnh theo kích thước ảnh gốc) -->
-                    <img id="uploaded-img" src="" class="hidden photo-img-content shadow-md">
+                    <!-- Ảnh tốt nghiệp chính thức của Mai Duyên (Được lưu trực tiếp trong thư mục dự án để điện thoại người nhận thấy ngay 100%) -->
+                    <img id="uploaded-img" src="anh_tot_nghiep.jpg" alt="Tân Cử Nhân Mai Duyên UEH" class="photo-img-content shadow-md" style="width: 100%; height: 100%; object-fit: cover;">
 
                     <!-- Nút gỡ ảnh nhỏ gọn góc trên khi đã có ảnh -->
-                    <div id="photo-tools-s1" class="admin-control-btn photo-frame-tools hidden">
+                    <div id="photo-tools-s1" class="admin-control-btn photo-frame-tools">
                         <button type="button" onclick="resetUserPhoto('s1')" class="photo-tool-btn text-rose-300 hover:text-rose-100" title="Đặt lại ảnh hoạt hình mặc định">
                             <i data-lucide="trash-2" class="w-3 h-3"></i>
                             <span>Gỡ ảnh</span>
@@ -824,7 +824,7 @@
                     <!-- Overlay Upload Button (Nút nổi bo tròn tinh tế không che người) -->
                     <label for="user-photo-input" id="upload-label-s1" class="admin-control-btn absolute bottom-3 left-1/2 -translate-x-1/2 bg-slate-900/85 hover:bg-slate-950 text-white font-black text-[11px] py-1.5 px-4 rounded-full backdrop-blur-md shadow-xl cursor-pointer flex items-center justify-center gap-1.5 hover:scale-105 transition active:scale-95 border border-yellow-300/80 z-20 whitespace-nowrap">
                         <i data-lucide="camera" class="w-3.5 h-3.5 text-ueh-gold animate-bounce"></i>
-                        <span id="upload-btn-text">📸 Ghép ảnh tốt nghiệp của bạn</span>
+                        <span id="upload-btn-text">📸 Đổi ảnh khác</span>
                     </label>
                 </div>
             </div>
@@ -1021,7 +1021,7 @@
                     📸 CHỤP 1000 TẤM
                 </div>
 
-                <div id="photo-frame-s4" class="smart-photo-frame bg-gradient-to-tr from-pink-200 via-yellow-100 to-sky-200 p-2 border-4 border-dashed border-pink-400 shadow-2xl group">
+                <div id="photo-frame-s4" class="smart-photo-frame has-photo bg-gradient-to-tr from-pink-200 via-yellow-100 to-sky-200 p-0 border-4 border-white shadow-2xl group" style="width: 340px; height: 230px; max-width: 100%; margin: 0 auto; aspect-ratio: 3/2;">
                     
                     <input type="file" id="user-photo-input-2" accept="image/*" class="hidden" onchange="handlePhotoUpload2(event)">
                     
@@ -1029,7 +1029,7 @@
                     <div id="uploaded-img-2-ambient" class="ambient-blur-bg hidden"></div>
 
                     <!-- Default Boba Graphic for Slide 5 (Có thể xóa hoặc thay thế bằng ảnh) -->
-                    <div id="default-photo-graphic-2" class="flex flex-col items-center justify-center w-full h-full editable-text relative z-10" data-key="s4-graphic">
+                    <div id="default-photo-graphic-2" class="hidden flex-col items-center justify-center w-full h-full editable-text relative z-10" data-key="s4-graphic">
                         <svg class="w-32 h-32 sm:w-36 sm:h-36 animate-bounce-subtle" viewBox="0 0 200 200" fill="none">
                             <path d="M60 70 L72 175 C73 180 78 185 84 185 H116 C122 185 127 180 128 175 L140 70 Z" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
                             <ellipse cx="100" cy="70" rx="42" ry="9" fill="#F59E0B"/>
@@ -1046,11 +1046,11 @@
                         </svg>
                     </div>
 
-                    <!-- Ảnh kỷ niệm do người dùng tải lên -->
-                    <img id="uploaded-img-2" src="" class="hidden photo-img-content shadow-md">
+                    <!-- Ảnh tốt nghiệp cử nhân chính thức của Mai Duyên ở Slide cuối -->
+                    <img id="uploaded-img-2" src="slide_cuoi.jpg" alt="Mai Duyên Nhận Bằng Cử Nhân UEH" class="photo-img-content shadow-md" style="width: 100%; height: 100%; object-fit: cover;">
 
                     <!-- Nút gỡ ảnh nhỏ gọn góc trên khi đã có ảnh -->
-                    <div id="photo-tools-s4" class="admin-control-btn photo-frame-tools hidden">
+                    <div id="photo-tools-s4" class="admin-control-btn photo-frame-tools">
                         <button type="button" onclick="resetUserPhoto('s4')" class="photo-tool-btn text-rose-300 hover:text-rose-100" title="Đặt lại hình vẽ hoạt hình mặc định">
                             <i data-lucide="trash-2" class="w-3 h-3"></i>
                             <span>Gỡ ảnh</span>
@@ -1060,7 +1060,7 @@
                     <!-- Overlay Upload Button (Nút nổi bo tròn tinh tế không che ảnh) -->
                     <label for="user-photo-input-2" id="upload-label-s4" class="admin-control-btn absolute bottom-2 left-1/2 -translate-x-1/2 bg-slate-900/85 hover:bg-slate-950 text-white font-black text-[11px] py-1.5 px-3.5 rounded-full backdrop-blur-md shadow-xl cursor-pointer flex items-center justify-center gap-1.5 hover:scale-105 transition active:scale-95 border border-yellow-300/80 z-20 whitespace-nowrap">
                         <i data-lucide="image-plus" class="w-3.5 h-3.5 text-yellow-300 animate-bounce"></i>
-                        <span id="upload-btn-text-2">📸 Ghép ảnh kỷ niệm</span>
+                        <span id="upload-btn-text-2">📸 Đổi ảnh khác</span>
                     </label>
                 </div>
             </div>
